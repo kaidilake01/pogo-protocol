@@ -1,0 +1,24 @@
+name: Bug report
+description: Report a reproducible non-security issue
+body:
+  - type: markdown
+    attributes:
+      value: Do not include secrets or exploit details. Follow SECURITY.md for security reports.
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected and actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Include the commit, component and minimal local reproduction. Redact logs before posting.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Runtime, network and relevant public contract address, if applicable.

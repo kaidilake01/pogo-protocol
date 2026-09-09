@@ -1,0 +1,30 @@
+{
+  "name": "pogo-protocol",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "workspaces": [
+    "sdk"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "npm run build --workspace=pogo-protocol-sdk",
+    "test": "tsx --test tests/sdk/*.test.ts",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test:contracts": "forge test",
+    "build:contracts": "forge build",
+    "example:read": "tsx examples/read-market.ts",
+    "example:create": "tsx examples/prepare-launch.ts",
+    "check:manifest": "node scripts/check-manifest.mjs"
+  },
+  "devDependencies": {
+    "@openzeppelin/contracts": "5.6.1",
+    "@openzeppelin/contracts-upgradeable": "5.6.1",
+    "@types/node": "24.10.0",
+    "typescript": "5.9.3",
+    "tsx": "4.21.0"
+  }
+}

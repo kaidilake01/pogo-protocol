@@ -1,0 +1,16 @@
+/** Public BSC deployment snapshot. Resolve mutable factory configuration on-chain. */
+export const bscDeployment = {
+  factory: "0x0abc6174ee9f9600243D14F83E215993b8BbABEb",
+  registry: "0xaa882B7d53eC9d028f877C5c5202ab2faB1EcD46",
+  implementation: "0xd40357d11bf6239Cf2761b487C8C84245B465f34",
+  tokenDeployer: "0x3e94eE9FFB68Ea159C1DFb2B673C10ce144396Dd",
+  curveDeployer: "0x5d0dd2197312fe8b86EA142D73c8565a1B7BE01f",
+  vaultDeployer: "0x9b905B153Ffadbb5b3BF374C8dA8f1Cae477e78f",
+  curveVersion: 5,
+  chainId: 56,
+  asOf: "2026-09-09",
+  bnbAdapter: "0x8218Bb0A3b3E14600FAAfaEbcb55B5B89BD561bB",
+  bnbTradeRouter: "0xAf351493CdA7D60558289d28C3D722331F1c029B",
+  pancakeV2Router: "0x10ED43C718714eb63d5aA57B78B54704E256024E",
+  wrappedBNB: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+} as const;

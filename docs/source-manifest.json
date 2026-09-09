@@ -1,0 +1,32 @@
+{
+  "algorithm": "sha256",
+  "files": {
+    "contracts/src/BondingCurve.sol": "f21255136c5a43b16cb69b58937fc608a8fa5ba8deb9387393719e9c299524a4",
+    "contracts/src/DividendVault.sol": "829a463064133135358a64434bb877b794c6cc6e3f4f2990ea5ffafe1f1732c1",
+    "contracts/src/Interfaces.sol": "99ce505719b0a5910fd4eece469aee99e56916c6bc9cd349151230af374b1c3a",
+    "contracts/src/LaunchFactory.sol": "fa46558cb7602564a09e70a6c6c19fd9501b172950297faf6676548f7fc26e88",
+    "contracts/src/LaunchFactoryV3.sol": "b7c915a845febdc4319c808d0e6b79fb61607bd20dc741f38d52ab953dda35d0",
+    "contracts/src/LaunchFactoryV4.sol": "3024fe81e18998a64957891f2f6d98ee96ab3e6d8813196df52faad8074c38eb",
+    "contracts/src/LaunchFactoryV5.sol": "3a78997c2b0a33783c624a9df17367c621d6696fd77f24ccbe55a0955e3aafdd",
+    "contracts/src/LaunchToken.sol": "fc5bc3c6c964b05da3f2f2e5d4797b58cffaf113fd221166515de7c5c739fdfd",
+    "contracts/src/QuoteAssetRegistry.sol": "78375fd0120fd086d0c19e60d1a17a42d902b012fab8779a91550fb3d42069b6",
+    "contracts/src/QuoteAssetRegistryV2.sol": "205a8aee533e2354c10e21e12798b487567288d43f1338b7c09b866fe193c291",
+    "contracts/src/QuoteAssetRegistryV3.sol": "e39c0023f6b3983c86666b3dbaccd8f335457cf1aeb5926bbdbfa39354ffedd0",
+    "contracts/src/v3/BNBQuoteAdapter.sol": "4dde05818ad68aeda7f7ccb9fa20b7793cc3e0e86fef31389462c83b23aedcdd",
+    "contracts/src/v3/BNBTradeRouter.sol": "b1995fdcbfbeb0a9db26ecfda4bc51f7a59410872e815624b3617d7a18e05c17",
+    "contracts/src/v3/LaunchTokenV3.sol": "9361ac06d4d2c262cd4873a4de5884bbdf74d2e6505703cfe7007815f16eedfc",
+    "contracts/src/v3/LaunchTypes.sol": "f2b32c5e311263f01d491189e49177da89d99d17f54668e5896d039b9b56c503",
+    "contracts/src/v3/MultiAssetCurve.sol": "6ad2627252bf9d4f5d642d1cbfa20000567a65d4ae4cf7b412e083029f8e8763",
+    "contracts/src/v3/RevenueVault.sol": "d3aaefee6e3824cb9ee50a109f3f74b1d59129266fde5c44d78930d6d7f4878e",
+    "contracts/src/v4/StandaloneCurve.sol": "7591d5da55938a279549cdd5e3075ae7aac281ec957530b5b06b841e634b28ef",
+    "contracts/src/v4/StandaloneCurveDeployer.sol": "3b44adeace1572e353bd5633c4ecf11df075d6235755483971fd69c3f90432d9",
+    "contracts/src/v4/StandaloneToken.sol": "ccf238575f2e9ee676841ac5e6d1d8f4c3ac447e1b1060c2d9d27fba9c9641ea",
+    "contracts/src/v4/StandaloneTokenDeployer.sol": "76f0a0a2c6b8e7cd29af5cdd64c996bec9384b0a40b6c556412d52b47d97a825",
+    "contracts/src/v4/StandaloneVault.sol": "28e1dde1703a9b6ed37a1829a43d5d7f8fb9888eff463f586de4922fa3bbbd3c",
+    "contracts/src/v4/StandaloneVaultDeployer.sol": "a28ab3792b8c1c74aa3895e7c913721e2dd4ee4b9d9d56326af44226110fcc25",
+    "contracts/src/v5/StandardCurve.sol": "6ae4618a3b2528e75363657d1cc1364adf2a64563b291f2a74e4a67bfeacb644",
+    "contracts/src/v5/StandardCurveDeployer.sol": "1b1f2ab0132e649cb122827db49146e68cb15f9cc01ed14adea805686a6ee63b",
+    "contracts/src/v5/StandardLaunchToken.sol": "f486d08292adb4aa08041dd092a35df75774c67966f11fab953af74f4c8b0372",
+    "contracts/src/v5/StandardTokenDeployer.sol": "45ce596de1f637947421daed470dd54c7374232c043a73a2aa0340275c4f00e8"
+  }
+}
