@@ -70,7 +70,6 @@ The examples accept `BSC_RPC_URL` for an optional RPC endpoint. They never load 
 | Internal sale allocation | 800,000,000 tokens |
 | Graduation liquidity allocation | 200,000,000 tokens |
 | Net graduation target | 18 BNB, or the quote-asset equivalent fixed at creation |
-| Internal platform trading fee | 1% |
 | Optional buy / sell tax | Independently configured, 0%–5% |
 | Graduation seeding fee | 2% of the accumulated quote reserve |
 | Initial external pool | Not deployed by the launch transaction |
