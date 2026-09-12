@@ -23,7 +23,7 @@
 
 Smart contracts, a TypeScript SDK, and developer documentation for POGO on BNB Chain.
 
-POGO launches tokens against a supported quote asset, trades them on an internal bonding curve, and migrates completed markets to PancakeSwap V2. Traders can use BNB for supported stock-token quote assets through an on-chain conversion route.
+POGO launches tokens against a supported quote asset, trades them on an internal bonding curve, and migrates completed markets to PancakeSwap V2. Traders can use BNB for supported non-BNB quote assets, including PEPE, through an on-chain conversion route.
 
 This repository contains the protocol source snapshot and a source-distributed SDK. It does not include the hosted website, production credentials, databases, private deployment journals, or a claim of an independent security audit. The SDK is not published to npm by this release.
 
@@ -80,7 +80,7 @@ The examples accept `BSC_RPC_URL` for an optional RPC endpoint. They never load 
 
 DEX tax tokens are automatically converted before distribution; beneficiaries receive the paired asset directly. Existing immutable projects retain their original rules. [Read the full economics](docs/economics.md).
 
-The factory is upgradeable. Newly launched standard tokens, curves, and vaults use full standalone deployments. Legacy contracts are retained because of inheritance, ABI compatibility, and existing projects; do not assume a legacy project's economics changed when the factory was upgraded.
+The factory is upgradeable. Newly launched standard tokens, curves, and vaults use full standalone deployments. Required inherited implementations live in `contracts/internal/`; they are dependencies, not alternative launch templates. Existing projects retain their deployment-time terms.
 
 An off-chain caller is required to submit graduation and maintenance transactions. The hosted keeper does this automatically when execution conditions and gas limits permit; smart contracts do not wake up on a timer.
 

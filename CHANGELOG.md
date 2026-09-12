@@ -1,21 +1,12 @@
-# Changelog
+# Current release
 
-## 2026-09-12 — Paired-asset dividends and DeFi templates
+## 2026-09-12
 
-- Creator revenue and holder dividends settle in the paired asset for templates 9 and 10.
-- Preserve .01 BNB test graduation, original opening reserves, 90 occupied-day rewards and 24-hour locks.
-- Early-exit single-token/LP deductions go to dEaD; LP liquidity remains in its V2 pair.
-- Refresh SDK template transactions, public addresses and source checksums.
-- Remove unused Solidity snapshots, obsolete ABI modules and unreferenced old tests.
+- Current launch templates: DeFi mining (11) and CZ transfer (10), with a 0.01 BNB-equivalent net graduation target for testing.
+- Fixed DeFi reward budgets: 6.25% flexible, 31.25% locked single token, 62.5% canonical V2 LP. Each pool releases over 90 occupied days and pauses when empty.
+- Single-token and LP locks last 24 hours per deposit. Early withdrawals send 10% of withdrawn principal to dEaD; LP receipts remain permanently locked with the underlying liquidity in its V2 pair.
+- Creator revenue and holder dividends settle in the paired asset. Mining rewards remain project tokens.
+- Production contract entrypoints are organized by function. Only required inherited dependencies remain under `contracts/internal/`.
+- Website and developer documentation share a dated rules snapshot. Removed superseded examples, stale deployment links and references to deleted tests.
 
-## 0.1.0 — 2026-09-09
-
-Initial public source release.
-
-- Standard standalone token, curve and vault contracts, with inherited legacy dependencies.
-- TypeScript SDK with contract ABIs, configuration readers and unsigned transaction builders.
-- English architecture, economics, integration, indexing and automation documentation.
-- Public deployment snapshot, deterministic Solidity tests and SDK regression tests.
-- CI, contribution templates and dependency-update configuration.
-
-This source release does not upgrade any deployed contract or publish an npm package.
+Earlier releases remain available in [Git history](https://github.com/kaidilake01/pogo-protocol/commits/main/). Updating documentation does not modify existing deployed contracts.

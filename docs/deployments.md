@@ -16,3 +16,5 @@ The machine-readable [snapshot](deployments/bsc-mainnet.json) and SDK constants 
 Both enabled templates deploy the paired-asset-only vault. Template registration preserves old projects and their addresses. Old template IDs are disabled for new launches. Refresh `launchTemplates`, `templateConfigHash` and quote targets on-chain before signing; this file is a dated snapshot.
 
 The new mining template fixes reward budgets at 6.25% flexible, 31.25% locked single-token and 62.5% V2 LP. The factory implementation, opening reserves, .01 target, 24-hour locks, paired-asset revenues and dEaD early-exit rules are unchanged. Existing mining pools retain their old allocation. The hosted verifier submits the new deployers and newly created standalone contracts for explorer source verification. Verification proves source/bytecode correspondence, not a security audit.
+
+The [current rules snapshot](current-rules.json) also lists the active template deployers and PEPE price feed used by the website documentation. This dated snapshot is not a substitute for reading live configuration before a transaction.

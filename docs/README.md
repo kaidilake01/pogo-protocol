@@ -6,6 +6,7 @@ Start with the protocol architecture, then choose the guide for your integration
 | --- | --- |
 | [Architecture](architecture.md) | Contract roles, launch lifecycle and administrative permissions |
 | [Economics](economics.md) | Supply, virtual reserves, fees and graduation |
+| [Current rules](current-rules.json) | Website-aligned parameters and current contract addresses |
 | [Integration](integration.md) | SDK, approvals, transaction preparation and wallet handling |
 | [Indexing](indexing.md) | Events, prices, candles and reorg handling |
 | [Automation](automation.md) | Graduation, revenue processing and keeper requirements |

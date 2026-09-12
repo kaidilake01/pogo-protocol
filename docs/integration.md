@@ -10,15 +10,15 @@ Creation-only requires the on-chain creation fee. Creation plus a native first b
 
 The transaction builders return `{to, data, value}` only. They do not connect a wallet, request approvals, estimate fees, sign, or broadcast. Simulate using the user's account, then let a wallet estimate current gas and confirm the transaction. A successful simulation is not a receipt. Handle rejected signatures, replaced transactions, mined reverts, and confirmed successes separately.
 
-## BNB and stock quote assets
+## BNB and non-BNB quote assets
 
-Use the curve directly for native-BNB markets. For stock quote markets, route BNB through `BNBTradeRouter` and a supported `BNBQuoteAdapter.Route`. Obtain executable quotes from the relevant DEX quoter and validate route endpoints. The SDK does not bundle a hosted quote API or a route discovery service.
+Use the curve directly for native-BNB markets. For supported non-BNB markets, including PEPE, route BNB through `BNBTradeRouter` and a supported `BNBQuoteAdapter.Route`. Obtain executable quotes from the relevant DEX quoter and validate route endpoints. The SDK does not bundle a hosted quote API or a route discovery service.
 
 For internal routed sells, approve the pool as required by `sellFor`; for external routed sells, the router receives tokens and needs the corresponding allowance. For direct ERC-20 buys and direct token sells, approve the curve. Bound approvals to the intended amount where practical.
 
 ## Compatibility
 
-`projectVersion(token)` remains 3 for the multi-asset factory ABI family, while `pool.VERSION()` is 11 for DeFi and 9 for CZ transfer. These are different version axes. Do not infer economics from the project ABI version alone. Older curves and historical token clones are included for compatibility, not recommended as the default for a new deployment.
+`projectVersion(token)` remains 3 for the multi-asset factory ABI family, while `pool.VERSION()` is 11 for DeFi and 9 for CZ transfer. These are different version axes. Do not infer economics from the project ABI version alone. Required compatibility types live in `contracts/internal/`. Select new launches through the current registered templates.
 
 ## Template selection
 
