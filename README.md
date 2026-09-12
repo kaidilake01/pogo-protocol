@@ -64,16 +64,20 @@ The examples accept `BSC_RPC_URL` for an optional RPC endpoint. They never load 
 
 ## Current launch model
 
-| Parameter | Standard curve (version 5) |
+| Parameter | Current templates |
 | --- | --- |
-| Token supply | 1,000,000,000 tokens, 18 decimals |
-| Internal sale allocation | 800,000,000 tokens |
-| Graduation liquidity allocation | 200,000,000 tokens |
-| Net graduation target | 18 BNB, or the quote-asset equivalent fixed at creation |
-| Optional buy / sell tax | Independently configured, 0%–5% |
-| Graduation seeding fee | 2% of the accumulated quote reserve |
-| Initial external pool | Not deployed by the launch transaction |
-| LP destination | `0x000000000000000000000000000000000000dEaD` |
+| Supply | 1 billion tokens |
+| Templates | DeFi staking & liquidity mining (9); CZ transfer (10) |
+| Current graduation target | 0.01 BNB equivalent for testing |
+| Opening reserves | Preserved independently of the graduation target |
+| Creator revenue / holder dividends | Paired asset on both curve and DEX |
+| Mining reward allocation | 1% flexible / 9% locked single / 90% V2 LP |
+| Reward duration | 90 occupied days per pool; empty pools pause |
+| Locks | 24 hours per deposit; 10% early-exit principal deduction |
+| Early-exit destination | Single tokens and LP receipts to dEaD |
+| Creation charge | Zero, plus wallet transaction gas |
+
+DEX tax tokens are automatically converted before distribution; beneficiaries receive the paired asset directly. Existing immutable projects retain their original rules. [Read the full economics](docs/economics.md).
 
 The factory is upgradeable. Newly launched standard tokens, curves, and vaults use full standalone deployments. Legacy contracts are retained because of inheritance, ABI compatibility, and existing projects; do not assume a legacy project's economics changed when the factory was upgraded.
 

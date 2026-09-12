@@ -1,5 +1,6 @@
 import {
   encodeFunctionData,
+  parseAbi,
   encodeAbiParameters,
   getCreate2Address,
   keccak256,
@@ -125,15 +126,17 @@ export function buildCreateTransaction(
   p: LaunchParameters,
   creationFee: bigint,
   factory: Address = bscDeployment.factory,
+  templateId: bigint = 9n,
 ): UnsignedTransaction {
   validateLaunch(p);
+  if(templateId<1n||templateId>255n)throw Error("Invalid template ID");
   if (creationFee < 0n) throw Error("Invalid creation fee");
   return {
     to: factory,
     data: encodeFunctionData({
       abi: factoryAbi,
-      functionName: "createTokenV3",
-      args: [p],
+      functionName: "createTokenWithTemplateV8",
+      args: [p, templateId],
     }),
     value: creationFee,
   };
@@ -143,8 +146,10 @@ export function buildCreateAndBuyTransaction(
   b: DeveloperBuy,
   creationFee: bigint,
   factory: Address = bscDeployment.factory,
+  templateId: bigint = 9n,
 ): UnsignedTransaction {
   validateLaunch(p);
+  if(templateId<1n||templateId>255n)throw Error("Invalid template ID");
   if (
     creationFee < 0n ||
     b.amount <= 0n ||
@@ -159,8 +164,8 @@ export function buildCreateAndBuyTransaction(
     to: factory,
     data: encodeFunctionData({
       abi: factoryAbi,
-      functionName: "createTokenAndBuyV3",
-      args: [p, b],
+      functionName: "createTokenAndBuyWithTemplateV8",
+      args: [p, b, templateId],
     }),
     value:
       creationFee +
@@ -243,7 +248,7 @@ export class PogoClient {
     if ((await this.client.getChainId()) !== 56)
       throw Error("Expected BNB Chain (56)");
   }
-  async launchConfiguration(quoteAsset: Address = zeroAddress) {
+  async launchConfiguration(quoteAsset: Address = zeroAddress, templateId: bigint = 9n) {
     await this.assertChain();
     const [registry, deployment, creationFee, creationPaused, configHash] =
       await Promise.all([
@@ -270,10 +275,12 @@ export class PogoClient {
         this.client.readContract({
           address: this.factory,
           abi: factoryAbi,
-          functionName: "launchConfigHash",
-          args: [quoteAsset],
+          functionName: "templateConfigHash",
+          args: [quoteAsset, templateId],
         }),
       ]);
+    const template=await this.client.readContract({address:this.factory,abi:factoryAbi,functionName:"launchTemplates",args:[templateId]});
+    if(!template[3])throw Error("Template disabled");
     const [quote, curveVersion] = await Promise.all([
       this.client.readContract({
         address: registry,
@@ -282,13 +289,13 @@ export class PogoClient {
         args: [quoteAsset],
       }),
       this.client.readContract({
-        address: registry,
-        abi: registryAbi,
+        address: template[0],
+        abi: parseAbi(["function CURVE_VERSION() view returns(uint256)"]),
         functionName: "CURVE_VERSION",
       }),
     ]);
     return {
-      registry,
+      registry, templateId, vaultDeployer:template[1],
       deployer: deployment[0],
       initCodeHash: deployment[1],
       creationFee,

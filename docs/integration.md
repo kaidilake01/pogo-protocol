@@ -4,7 +4,7 @@ The SDK is supplied in `sdk/`; this release does not publish an npm package. Run
 
 ## Read before preparing a transaction
 
-Use BSC chain ID 56. Read `launchConfiguration(quoteAsset)` immediately before preparing a launch. It resolves the current registry and token deployment data through the factory. The returned config hash and target bounds protect against changed configuration and oracle-driven target movement. A stale quote must be refreshed, not silently submitted with zero minimums.
+Use BSC chain ID 56. Read `launchConfiguration(quoteAsset, templateId)` immediately before preparing a launch. It resolves the current registry and token deployment data through the factory. The returned config hash and target bounds protect against changed configuration and oracle-driven target movement. A stale quote must be refreshed, not silently submitted with zero minimums.
 
 Creation-only requires the on-chain creation fee. Creation plus a native first buy requires that fee plus the gross input. ERC-20-funded creation requires the appropriate factory allowance. Quote amounts use the selected asset's decimals; launch tokens always use 18 decimals. Never use JavaScript floating-point arithmetic for transaction amounts.
 
@@ -18,4 +18,8 @@ For internal routed sells, approve the pool as required by `sellFor`; for extern
 
 ## Compatibility
 
-`projectVersion(token)` remains 3 for the multi-asset factory ABI family, while `pool.VERSION()` is 5 for a standard curve. These are different version axes. Do not infer economics from the project ABI version alone. Older curves and historical token clones are included for compatibility, not recommended as the default for a new deployment.
+`projectVersion(token)` remains 3 for the multi-asset factory ABI family, while `pool.VERSION()` is 11 for DeFi and 9 for CZ transfer. These are different version axes. Do not infer economics from the project ABI version alone. Older curves and historical token clones are included for compatibility, not recommended as the default for a new deployment.
+
+## Template selection
+
+The launch readers and unsigned creation builders default to template 9. Pass template 10 for CZ transfer. Creation builders accept `templateId` after the optional factory address. They encode `createTokenWithTemplateV8` or `createTokenAndBuyWithTemplateV8`, and the launch config hash must come from the same template. The current public ABI includes `QuoteRevenueVault` and `ReflowMining`. Do not use project TOKEN as the dividend asset in a quote-only vault.

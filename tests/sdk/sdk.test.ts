@@ -43,8 +43,9 @@ test("create calldata preserves tax and target bounds and pays only the creation
   const tx = buildCreateTransaction(p, parseEther(".01")),
     decoded = decodeFunctionData({ abi: factoryAbi, data: tx.data });
   assert.equal(tx.value, parseEther(".01"));
-  assert.equal(decoded.functionName, "createTokenV3");
+  assert.equal(decoded.functionName, "createTokenWithTemplateV8");
   assert.deepEqual(decoded.args?.[0], p);
+  assert.equal(decoded.args?.[1],9n);
 });
 test("tax validation rejects excess total, negative allocations and excessive buy tax", () => {
   assert.throws(() => validateTax({ ...tax, recipientBps: 9000 }));

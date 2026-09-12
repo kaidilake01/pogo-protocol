@@ -1,25 +1,31 @@
-# Bonding-curve economics
+# Launch and mining economics
 
-All amounts below refer to a new standard curve (version 5). Read each existing pool's actual parameters and version.
+## Current test deployment
 
-Let `T` be the net quote-asset graduation target, `V = ceil(T × 25 / 73)` the virtual quote reserve, `S = 800,000,000 × 10^18` the sale allocation, and `H = ceil(S × (T + V) / T)` the initial virtual token reserve. Initial real supply is `1,000,000,000 × 10^18`; the virtual token offset is `H - initialSupply`.
+| Parameter | Value |
+| --- | --- |
+| Initial supply | 1 billion tokens, 18 decimals |
+| Creation charge | Zero; transaction gas remains payable |
+| Net graduation target | 0.01 BNB equivalent, fixed in quote-asset units at creation |
+| Production design benchmark | 6.666 BNB; not the current test target |
+| Opening virtual BNB reserve | ceil(18 × 25 / 73) BNB |
+| Opening virtual token reserve | ceil(800 million × 98 / 73) tokens |
+| Project buy/sell taxes | Independently 0–5% |
+| Graduation seeding fee | 2% of net quote reserve |
+| External market | PancakeSwap V2 |
 
-For a buy with net input `n`, current real token reserve `rT` and real quote reserve `rQ`:
+Reducing the graduation target does not scale down opening virtual reserves. With virtual quote Q, virtual tokens T and net graduation target G, the sale amount is floor(T×G/(Q+G)). Graduation quotes are G less the seeding fee; liquidity tokens are calculated at the graduation price. The actual remaining token balance goes to mining or the CZ transfer destination according to the selected template. At the 0.01 BNB test target, the remainder is about 996.56 million tokens; it is not fixed at 180 million.
 
-```text
-tokensOut = floor((rT + virtualTokenOffset) × n / (V + rQ + n))
-```
+CZ transfer is an ordinary transfer to `0x28816c4C4792467390C90e5B426F198570E29307`, preserving total supply. It is not a burn, a lock or an endorsement. The recipient can transfer the tokens and receives holder dividends if eligible.
 
-Output is capped at the remaining sale allocation. A final buy is capped at the remaining quote target and excess payment is refunded or not taken. Solidity integer rounding is authoritative. The SDK's `previewInitialBuy` applies only to a fresh curve; use `quoteBuy` and `quoteSell` on-chain for an existing market.
+## DeFi mining
 
-Fees are deducted before reserve growth: a 1% platform fee plus the configured buy tax. Sell proceeds similarly account for the configured sell tax and platform fee. Tax allocations across creator, burn, holders and liquidity sum to 10,000 basis points.
+| Pool | Share of actual reward budget | Principal lock |
+| --- | --- | --- |
+| Flexible single token | 1% | None |
+| Locked single token | 9% | 24 hours per deposit |
+| Canonical V2 LP | 90% | 24 hours per deposit |
 
-## Graduation
+Each pool consumes 90 occupied days of release time. Its clock pauses while nobody is staked; it neither burns empty-pool rewards nor emits them as a catch-up windfall. APR varies with reward rates and staked value. Rewards are the launched token; tax dividends are the paired asset. These are different revenue mechanisms.
 
-For BNB, the net target is 18 BNB. Other quote assets freeze the 18-BNB-equivalent target using validated creation-time oracle prices. This is not a permanently fixed USD market-cap target, and later quote-asset exchange-rate movements do not change an existing pool's target.
-
-Progress is `(initialSupply - reserveTokens) / saleAllocation`, capped at 100%. Sells reduce progress. At graduation, 200 million tokens and 98% of the accumulated quote reserve seed the external pool; 2% is added to platform credit. Phantom reserves never enter the external pool. For a BNB launch that reaches its target, this means 17.64 BNB of initial quote liquidity.
-
-The virtual-reserve parameters align the final internal marginal price with the initial external reserve ratio, subject to integer rounding and exceptional donated balances. A standard BNB launch starts at approximately 5.739795918 BNB fully diluted valuation. A fresh 0.1 BNB buy with 3% buy tax plus 1% platform fee moves the marginal price by approximately 3.13%, not a guaranteed tens-of-percent move. Later trades have different effects.
-
-These values were checked against the [FOUR integration documentation](https://four-meme.gitbook.io/four.meme/developer/fourmeme-integration) and its published helper. [FLAP's curve documentation](https://docs.flap.sh/flap/developers/basic-and-mechanism/bonding-curve) describes the same general internal-curve/DEX-migration lifecycle but has its own parameters. POGO does not claim that these platforms share identical implementations.
+Before the 24-hour unlock, early principal withdrawal deducts 10%. Single-token deductions transfer to dEaD, preserving token totalSupply. LP deductions transfer the LP receipt to dEaD, permanently locking the corresponding liquidity in the V2 pool; they do not call pair.burn or remove underlying liquidity. Mature withdrawals and flexible withdrawals have no early-exit deduction. Historical pools retain their original rules.

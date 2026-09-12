@@ -50,13 +50,13 @@ contract LaunchFactoryV3 is LaunchFactory {
     }
     function launchConfigHash(address quote) public view virtual returns(bytes32){
         return keccak256(abi.encode(quoteRegistry.configHash(quote),tokenImplementationV3,vaultImplementationV3,
-            poolImplementationV3,treasury,router,CREATION_FEE,templateVersionV3,address(bnbAdapter),tradeRouterV3));
+            poolImplementationV3,treasury,router,CREATION_FEE(),templateVersionV3,address(bnbAdapter),tradeRouterV3));
     }
     function predictTokenV3(address creator,bytes32 salt) public view virtual returns(address){
         return Clones.predictDeterministicAddress(tokenImplementationV3,effectiveSalt(creator,salt),address(this));
     }
-    function createTokenV3(CreateParamsV3 calldata p) external payable nonReentrant returns(address token){
-        if(msg.value!=CREATION_FEE)revert InvalidConfig();
+    function createTokenV3(CreateParamsV3 calldata p) public payable nonReentrant returns(address token){
+        if(msg.value!=CREATION_FEE())revert InvalidConfig();
         return _createTokenV3(p);
     }
     function setBNBAdapter(address adapter) external onlyOwner {
@@ -75,9 +75,9 @@ contract LaunchFactoryV3 is LaunchFactory {
     /// @notice One transaction: deploy, optionally convert BNB to the quote asset, and buy for the creator.
     /// No tx.origin, forwarded creator identity, intermediate wallet transfer or second signing step.
     function createTokenAndBuyV3(CreateParamsV3 calldata p,DeveloperBuy calldata b)
-        external payable nonReentrant returns(address token){
+        public payable nonReentrant returns(address token){
         bool nativeInput=b.payWithBNB||p.quoteAsset==address(0);
-        if(b.amount==0||b.minTokens==0||block.timestamp>b.deadline||msg.value!=CREATION_FEE+(nativeInput?b.amount:0))revert InvalidConfig();
+        if(b.amount==0||b.minTokens==0||block.timestamp>b.deadline||msg.value!=CREATION_FEE()+(nativeInput?b.amount:0))revert InvalidConfig();
         uint256 nativeBefore=address(this).balance-msg.value;
         uint256 quoteBefore=p.quoteAsset==address(0)?0:IERC20(p.quoteAsset).balanceOf(address(this));
         token=_createTokenV3(p);
@@ -107,7 +107,7 @@ contract LaunchFactoryV3 is LaunchFactory {
             uint256 excess=IERC20(p.quoteAsset).balanceOf(address(this))-quoteBefore;
             if(excess!=0)IERC20(p.quoteAsset).safeTransfer(msg.sender,excess);
         }
-        uint256 nativeRefund=address(this).balance-nativeBefore-CREATION_FEE;
+        uint256 nativeRefund=address(this).balance-nativeBefore-CREATION_FEE();
         if(nativeRefund!=0){(bool ok,)=msg.sender.call{value:nativeRefund}("");if(!ok)revert TransferFailed();}
         emit DeveloperBought(token,msg.sender,b.amount,nativeInput,IERC20(token).balanceOf(msg.sender));
     }
@@ -127,7 +127,7 @@ contract LaunchFactoryV3 is LaunchFactory {
         MultiAssetCurve(pool).initialize(MultiAssetCurve.Init(token,vault,treasury,router,p.quoteAsset,dp,q.virtualQuote,q.target));
         if(tradeRouterV3!=address(0))MultiAssetCurve(pool).setTradeRouter(tradeRouterV3);
         projects[token]=Project(msg.sender,pool,vault,uint64(block.timestamp));tokens.push(token);projectVersion[token]=3;
-        creationCredits+=CREATION_FEE;
+        creationCredits+=CREATION_FEE();
         emit TokenCreatedV3(token,msg.sender,p.quoteAsset,pool,vault,p.name,p.symbol,p.metadataURI,p.tax,q.target,q.virtualQuote,q.assetUsd,q.bnbUsd,dp);
     }
     function _deployTokenV3(bytes32 salt) internal virtual returns(address){return Clones.cloneDeterministic(tokenImplementationV3,salt);}

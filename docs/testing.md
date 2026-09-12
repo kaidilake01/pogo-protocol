@@ -1,18 +1,15 @@
 # Testing and reproducibility
 
-## Release validation — September 9, 2026
+Run `npm ci`, `npm run build`, `npm run typecheck`, `npm test`, `forge test` and `npm run check:manifest` from the public repository. Solidity is 0.8.28 with optimizer 200, via IR and Paris EVM.
 
-- Solidity: 134 tests passed, 0 failed, 1 optional live-RPC test skipped; fuzz tests used 256 runs per case.
-- SDK: 8 tests passed; package build and TypeScript checks passed.
-- The read-only example successfully resolved the live BSC factory's version-5 configuration and 18-BNB native graduation target.
-- The Solidity source SHA-256 manifest passed verification. These results apply to this release snapshot, not future commits or subsequent mainnet changes.
+Selected regressions cover quote-only native and six-decimal payouts, rejection of token-asset claims, recipient failures and retry, optional LP/buyback failure isolation, third-party claims without payout redirection, staking eligibility, reward accounting and early-exit conservation. Shared test helpers and inherited tests remain where compilation requires them.
 
-## Reproducing the checks
+`QuoteRevenueForkTest` uses actual BSC PancakeSwap V2 contracts and supported BNB, QQQB, AAPLB and SPCXB quote assets. It creates launches with zero and nonzero tax, graduates, buys/sells externally, converts tax, claims quote dividends, stakes, exits and removes LP. Enable explicitly:
 
-Install dependencies with `npm ci`. `npm run test:contracts` runs deterministic Solidity tests and fuzz cases with Solidity 0.8.28, Paris EVM, optimizer 200 and via-IR. `npm test` checks SDK arithmetic, input validation and transaction encoding. `npm run typecheck` checks the SDK, tests and examples; `npm run build` emits the SDK package.
+```sh
+RUN_BSC_FORK=1 BSC_RPC_URL=https://your-archive-rpc forge test --match-contract QuoteRevenueForkTest -vv
+```
 
-The test tree includes legacy fixture dependencies and regression suites. None of the included default tests submits a mainnet transaction. Production deployment/signing scripts are deliberately excluded. Fork tests tied to previous live deployment assumptions are not shipped as default tests.
+Use an RPC with historical state support. A skipped fork test is not evidence of a successful integration test. Fork funding and impersonation do not spend real assets. Local and fork checks are engineering validation, not an independent audit.
 
-`StandardCurve.t.sol` covers initial price, taxed trading, virtual reserves, sale allocation, delayed pair deployment, graduation liquidity, and invariant-style sequences. These tests improve reproducibility but do not replace an independent audit.
-
-For a fork integration, pin a BSC block and use impersonation or local test accounts only. Verify create-only and create-plus-buy for each supported quote asset, an internal sell, graduation against the real DEX, LP destination and post-graduation buy/sell. Never reuse a production key for a fork test. Oracle freshness checks use block time, so retain a consistent fork clock.
+`docs/source-manifest.json` lists selected entrypoints and SHA-256 checksums for shipped Solidity files. Generated ABI modules are derived from the same compilation artifacts. No private deployment keys, signed transaction journals or runtime state are shipped.

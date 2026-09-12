@@ -5,8 +5,8 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {Math} from "@openzeppelin/contracts/utils/math/Math.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import {LaunchTypes, ILaunchTokenV3} from "./LaunchTypes.sol";
-import {MultiAssetCurve} from "./MultiAssetCurve.sol";
+import {LaunchTypes, ILaunchTokenV3} from "../v3/LaunchTypes.sol";
+import {MultiAssetCurve} from "../v3/MultiAssetCurve.sol";
 import {IV2Router, IV2Pair, IWBNB} from "../Interfaces.sol";
 
 interface IQuoteSwapRouter {
@@ -17,10 +17,17 @@ interface ICumulativePair {
     function price0CumulativeLast() external view returns(uint256);
     function price1CumulativeLast() external view returns(uint256);
 }
+interface IQuoteMiningBalance {
+    function fundingPool() external view returns(address);
+    function token() external view returns(address);
+    function vault() external view returns(address);
+    function balanceOf(address) external view returns(uint256);
+}
 interface IUnwrap { function withdraw(uint256 amount) external; }
 
-/// @notice Immutable per-launch tax allocation; balance-based dividends, no staking or principal deposits.
-contract RevenueVault is ReentrancyGuard {
+/// @notice Standalone paired-asset-only dividends. DEX token taxes queue until a guarded conversion.
+/// Existing immutable vaults and their historical token credits are not modified.
+contract QuoteRevenueVault is ReentrancyGuard {
     using SafeERC20 for IERC20;
     uint256 private constant SCALE=1e36;
     address public token;
@@ -56,15 +63,28 @@ contract RevenueVault is ReentrancyGuard {
     event LiquidityAdded(uint256 quoteAmount,uint256 tokenAmount,uint256 lp);
     event AutomationRun(uint256 actions);
     event PriceObserved(uint256 timestamp);
+    event BudgetAutomationDeferred();
 
-    constructor(){initialized=true;}
+    address private immutable launchFactory;
+    uint256 public constant DIVIDEND_ASSET_VERSION=1;
+    uint256 public pendingTokenRevenue;
+    uint256 public totalTokenRevenueConverted;
+    uint256 public totalQuoteRevenueConverted;
+    address public stakingPool;
+    event TokenRevenueQueued(uint256 amount);
+    event TokenRevenueConverted(uint256 tokens,uint256 quote);
+    constructor(address factory_) {
+        if(factory_.code.length==0)revert InvalidConfig();
+        launchFactory=factory_;
+    }
     function initialize(address token_,address creator_,address pool_,address quote_,address router_,LaunchTypes.Tax calldata t) public virtual {
+        if(msg.sender!=launchFactory)revert Unauthorized();
         if(initialized||token_==address(0)||creator_==address(0)||pool_==address(0)||router_.code.length==0||!LaunchTypes.valid(t)) revert InvalidConfig();
         initialized=true;token=token_;creator=creator_;pool=pool_;quoteAsset=quote_;router=router_;tax=t;
     }
-    function validAsset(address asset) public view returns(bool){return asset==quoteAsset||asset==token;}
+    function validAsset(address asset) public view returns(bool){return asset==quoteAsset;}
     function eligible(address who) public view virtual returns(bool){
-        return who!=address(0)&&who!=address(0xdead)&&who!=token&&who!=address(this)&&who!=pool&&who!=pair;
+        return who!=address(0)&&who!=address(0xdead)&&who!=token&&who!=address(this)&&who!=pool&&who!=pair&&who!=stakingPool;
     }
     function _settle(address who,address asset) private {
         credit[who][asset]+=Math.mulDiv(holderBalance[who],accPerShare[asset]-paid[who][asset],SCALE);
@@ -72,13 +92,26 @@ contract RevenueVault is ReentrancyGuard {
     }
     function _sync(address who,uint256 balance) internal {
         if(!eligible(who))return;
-        _settle(who,quoteAsset);_settle(who,token);
+        _settle(who,quoteAsset);
         uint256 next=balance>=tax.minimumHolding?balance:0;
         eligibleSupply=eligibleSupply-holderBalance[who]+next;holderBalance[who]=next;
     }
     function syncBalances(address from,uint256 fromBalance,address to,uint256 toBalance) external virtual {
         if(msg.sender!=token)revert Unauthorized();
-        _sync(from,fromBalance);if(to!=from)_sync(to,toBalance);
+        _sync(from,_beneficialBalance(from,fromBalance));if(to!=from)_sync(to,_beneficialBalance(to,toBalance));
+    }
+    function setStakingPool(address staking_) external {
+        if(msg.sender!=pool||stakingPool!=address(0)||staking_.code.length==0
+            ||IQuoteMiningBalance(staking_).fundingPool()!=pool||IQuoteMiningBalance(staking_).token()!=token
+            ||IQuoteMiningBalance(staking_).vault()!=address(this))revert Unauthorized();
+        stakingPool=staking_;
+    }
+    function _beneficialBalance(address who,uint256 wallet) private view returns(uint256){
+        return wallet+(stakingPool==address(0)||!eligible(who)?0:IQuoteMiningBalance(stakingPool).balanceOf(who));
+    }
+    function syncStake(address who) external {
+        if(msg.sender!=stakingPool)revert Unauthorized();
+        _sync(who,_beneficialBalance(who,IERC20(token).balanceOf(who)));
     }
     function setPair(address pair_) external {
         if(msg.sender!=token||pair!=address(0)||pair_==address(0))revert Unauthorized();
@@ -111,16 +144,20 @@ contract RevenueVault is ReentrancyGuard {
     }
     function depositTokenRevenue(uint256 amount) external nonReentrant {
         if(msg.sender!=token||amount==0)revert Unauthorized();
-        IERC20(token).safeTransferFrom(token,address(this),amount);_split(token,amount);
+        // The token can call this while PancakeSwap holds its pair lock. Queue only; never swap here.
+        uint256 before_=IERC20(token).balanceOf(address(this));
+        IERC20(token).safeTransferFrom(token,address(this),amount);
+        if(IERC20(token).balanceOf(address(this))-before_!=amount)revert InvalidAmount();
+        pendingTokenRevenue+=amount;emit TokenRevenueQueued(amount);
     }
     function _split(address asset,uint256 amount) private {
+        if(asset!=quoteAsset)revert InvalidConfig();
         uint256 holders=amount*tax.holderBps/10_000;
         uint256 burn=amount*tax.burnBps/10_000;
         uint256 liquidity=amount*tax.liquidityBps/10_000;
         uint256 recipient=amount-holders-burn-liquidity;
         recipientCredit[asset]+=recipient;liquidityBudget[asset]+=liquidity;
-        if(asset==token&&burn!=0){ILaunchTokenV3(token).burn(burn);totalBuybackBurned+=burn;}
-        else if(asset==quoteAsset)burnBudget+=burn;
+        burnBudget+=burn;
         if(holders!=0||queued[asset]!=0)_allocate(asset,holders);
         emit RevenueAllocated(asset,recipient,holders,burn,liquidity);
         _tryRecipient(asset);
@@ -148,6 +185,13 @@ contract RevenueVault is ReentrancyGuard {
         _settle(msg.sender,asset);uint256 amount=credit[msg.sender][asset];
         if(amount==0)revert InvalidAmount();credit[msg.sender][asset]=0;
         _send(asset,recipient,amount);emit Claimed(msg.sender,asset,recipient,amount);
+    }
+    /// @notice A bot or any caller can pay gas for a holder; the payout cannot be redirected.
+    function claimFor(address holder) external nonReentrant {
+        if(holder==address(0))revert InvalidConfig();
+        _settle(holder,quoteAsset);uint256 amount=credit[holder][quoteAsset];
+        if(amount==0)revert InvalidAmount();credit[holder][quoteAsset]=0;
+        _send(quoteAsset,holder,amount);emit Claimed(holder,quoteAsset,holder,amount);
     }
     /// @notice Creator supplies trade slippage; no arbitrary caller can spend a shared buyback budget at zero minimum.
     function executeBuyback(uint256 amount,uint256 minTokens,uint256 deadline) external nonReentrant {
@@ -220,8 +264,11 @@ contract RevenueVault is ReentrancyGuard {
         }
         (uint256 rq,uint256 rt)=_reserves();
         if(rq==0||rt==0)return 0;
+        // Keep the batching threshold attainable even for a small graduation test pool.
+        minimum=Math.max(1,Math.min(minimum,rq/10_000));
         bool pending=burnBudget>=minimum||liquidityBudget[quoteAsset]>=minimum
-            ||liquidityBudget[token]>=Math.mulDiv(minimum,rt,rq);
+            ||liquidityBudget[token]>=Math.mulDiv(minimum,rt,rq)
+            ||Math.mulDiv(pendingTokenRevenue,rq,rt)>=minimum;
         if(!pending)return 0;
         uint256 cumulative=_cumulative(rq,rt);
         uint256 elapsed=block.timestamp-observationAt;
@@ -233,6 +280,25 @@ contract RevenueVault is ReentrancyGuard {
         _observe(cumulative);
         // Refresh the observation after drift; never chase a manipulated spot within this call.
         if(average==0||Math.mulDiv(spot>average?spot-average:average-spot,10_000,average)>100)return 4;
+        uint256 tokenInput=Math.min(pendingTokenRevenue,rt/400);
+        if(tokenInput>0&&Math.mulDiv(tokenInput,rq,rt)>=minimum){
+            pendingTokenRevenue-=tokenInput;
+            uint256 received=_swapToken(tokenInput,_minimumOutput(tokenInput,rt,rq));
+            totalTokenRevenueConverted+=tokenInput;totalQuoteRevenueConverted+=received;
+            // All beneficiary ledgers are credited only in the project's paired asset.
+            _split(quoteAsset,received);emit TokenRevenueConverted(tokenInput,received);actions|=8;
+            (rq,rt)=_reserves();
+        }
+        // Optional buyback/LP failures must not roll back already converted holder/creator revenue.
+        try this.processBudgets(minimum) returns(uint256 completed){actions|=completed;}
+        catch {emit BudgetAutomationDeferred();}
+        lastAutomationAt=block.timestamp;
+        emit AutomationRun(actions|4);
+        return actions|4;
+    }
+    function processBudgets(uint256 minimum) external returns(uint256 actions) {
+        if(msg.sender!=address(this))revert Unauthorized();
+        (uint256 rq,uint256 rt)=_reserves();
         uint256 amount=Math.min(burnBudget,rq/400);
         if(amount>=minimum){
             uint256 out=_minimumOutput(amount,rq,rt);
@@ -262,9 +328,6 @@ contract RevenueVault is ReentrancyGuard {
             uint256 expected=Math.min(Math.mulDiv(q,IV2Pair(pair).totalSupply(),rq),Math.mulDiv(t,IV2Pair(pair).totalSupply(),rt));
             if(expected>100){_addLiquidity(q,t,expected*99/100);actions|=2;}
         }
-        lastAutomationAt=block.timestamp;
-        emit AutomationRun(actions|4);
-        return actions|4;
     }
     function _reserves() private view returns(uint256 rq,uint256 rt){
         (uint112 r0,uint112 r1,)=IV2Pair(pair).getReserves();
@@ -311,4 +374,13 @@ contract RevenueVault is ReentrancyGuard {
         else IERC20(asset).safeTransfer(to,amount);
     }
     receive() external payable {if(msg.sender!=pool&&msg.sender!=IV2Router(router).WETH())revert Unauthorized();}
+}
+
+contract QuoteVaultDeployer {
+    address public immutable factory;
+    uint256 public constant KIND=3;
+    uint256 public constant DIVIDEND_ASSET_VERSION=1;
+    error Unauthorized();
+    constructor(address factory_){if(factory_.code.length==0)revert Unauthorized();factory=factory_;}
+    function deploy() external returns(address){if(msg.sender!=factory)revert Unauthorized();return address(new QuoteRevenueVault(factory));}
 }

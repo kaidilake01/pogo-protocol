@@ -1,35 +1,30 @@
-# Architecture and permissions
+# Protocol architecture
 
-## Contracts
+The current factory is `LaunchFactoryV8`, an upgradeable factory with append-only launch templates. Each new project receives a standalone token, curve and revenue vault. DeFi launches also receive a standalone mining contract. These project contracts have no upgrade or rescue path.
 
-| Contract | Responsibility |
+## Current entrypoints
+
+| Contract | Role |
 | --- | --- |
-| `LaunchFactoryV5` | UUPS factory upgrade and coordinated registry/deployer configuration |
-| `LaunchFactoryV3` / `LaunchFactoryV4` | Inherited creation, registry, BNB conversion and standalone deployment logic |
-| `QuoteAssetRegistryV3` | Supported quote assets, oracle validation, version-5 launch parameters |
-| `StandardTokenDeployer` | CREATE2 full-runtime token deployment |
-| `StandardCurveDeployer` | Full-runtime version-5 market deployment |
-| `StandaloneVaultDeployer` | Full-runtime per-token revenue vault deployment |
-| `StandardLaunchToken` | Fixed-supply ERC-20, immutable launch relationship and tax parameters |
-| `StandardCurve` | Internal buys/sells, reserve accounting and graduation |
-| `RevenueVault` | Creator allocation, holder accounting, buyback and liquidity budgets |
-| `BNBQuoteAdapter` / `BNBTradeRouter` | BNB conversion and routed trades |
+| LaunchFactoryV8 | CREATE2 token creation, template selection, configuration hashes |
+| StandardTokenDeployer / StandardLaunchToken | Full ERC-20 deployments, fixed taxes, holder-share synchronization |
+| QuoteAssetRegistryV7 | Supported quote assets; independent 0.01 BNB test target and original opening reserves |
+| ReflowCurveDeployer / ReflowCurve | DeFi curve, graduation and actual leftover reward funding |
+| ReflowMining | Flexible single-token, locked single-token and canonical V2 LP farming |
+| DirectedLaunchCurveDeployer | CZ transfer template; remaining tokens transfer to the fixed recipient |
+| QuoteVaultDeployer / QuoteRevenueVault | Paired-asset-only creator revenue and holder dividends |
+| BNBQuoteAdapter / BNBTradeRouter | Supported BNB-to-quote routes and BNB trade settlement |
 
-## Launch lifecycle
+Template 9 uses ReflowCurve (curve version 11); template 10 uses DirectedLaunchCurve (curve version 9). Both use QuoteRevenueVault (`DIVIDEND_ASSET_VERSION = 1`). Factory `projectVersion` remains 3: it identifies the multi-asset ABI family, not the economic version. Read the actual project's contracts.
 
-1. Read the factory's current registry, creation fee, deployment configuration and launch configuration hash.
-2. Read the quote asset's current launch quote. Pin immutable metadata separately.
-3. Search a creator-bound CREATE2 salt whose predicted token address ends in `6666`.
-4. Simulate `createTokenV3` or `createTokenAndBuyV3`, then submit through the user's wallet.
-5. Trade against the internal curve. The launch transaction reserves the canonical external pair address but does not deploy that pair. Transfers to that destination are blocked before activation.
-6. When the net reserve reaches the target, a caller invokes `graduate()`. It creates or uses the canonical empty PancakeSwap pair, deposits the liquidity allocation, and mints LP tokens to the dead address.
+## Tax lifecycle
 
-BNB-to-quote conversion uses existing liquidity for the **quote asset**, such as WBNB/stock-token. That is distinct from the **new launch-token/quote-asset pool**, which is funded at graduation.
+Curve trades collect project taxes directly in the paired asset. DEX trades collect token transfer taxes, which are queued in the revenue vault without swapping inside PancakeSwap's pair lock. A permissionless maintenance transaction converts bounded batches to the paired asset and allocates the received amount to the configured destinations. Creator and holder ledgers never credit the launched token in the new vault.
 
-## Authority boundaries
+Creator payments are attempted automatically. Reverting recipients retain a claimable credit; retries cannot redirect it. Holder balances use an accumulator with settlement before share changes. Single-token staking preserves beneficial ownership; LP units do not count as token shares. A holder can claim, or any caller can fund `claimFor(holder)` with the payout fixed to that holder.
 
-The factory owner can upgrade the factory and change future launch configuration, supported registry/deployers, treasury or creation availability through the exposed owner methods. Quote-registry configuration is owner-controlled. Integrators must resolve current configuration rather than treating addresses in a dated manifest as immutable.
+Optional buyback or liquidity processing runs in an isolated subcall: failure cannot roll back completed dividend conversion. Failed tax conversion reverts its own accounting and leaves pending tokens available. No caller can choose an arbitrary swap route or spend credited dividends.
 
-The standard launch token reports a zero owner and has fixed supply; its bound curve and vault have their own constructor/initialization restrictions. Full standalone deployment does not remove protocol-level configuration authority. Existing standalone instances are not automatically rewritten by a factory upgrade.
+## Source organization
 
-Keeper entry points are permissionless and constrain destinations in the contracts. Creators may also trigger the creator-authorized buyback method with explicit bounds. Holder payouts require the applicable on-chain claim; do not describe every holder reward as an automatic wallet transfer.
+Only current production entrypoints, their transitive imports, and the selected regression tests' dependencies are included. Versioned paths still imported by the current factory are dependencies, not alternative launch recommendations. Deleting them would break compilation or alter verification metadata. Superseded snapshots remain in Git history; build outputs, private journals and secrets are excluded.

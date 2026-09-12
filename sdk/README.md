@@ -32,3 +32,7 @@ console.log(configuration.quote.target);
 Amounts are `bigint` in raw token units. Deadlines are Unix seconds. Builders never estimate gas, approve assets, sign, broadcast, or ensure a route is currently liquid. Validate and simulate against fresh on-chain state. `previewInitialBuy` defaults to legacy version 3 for compatibility; pass `Number(configuration.curveVersion)` for standard launches.
 
 The package includes a dated public deployment snapshot. Resolve mutable configuration through the factory. Use this SDK for the multi-asset ABI family; the oldest single-asset V2 project interfaces are available in Solidity sources but not wrapped by `PogoClient`.
+
+## Current templates
+
+Default template ID is 9 (DeFi); ID 10 is CZ transfer. `launchConfiguration(quoteAsset, templateId)` reads the matching hash. Pass the same ID as the fourth argument of `buildCreateTransaction` or the fifth argument of `buildCreateAndBuyTransaction` after the factory address. Vault and mining ABIs are exported as `vaultAbi` and `miningAbi`. Historical project rewards must use that project’s original ABI and asset.

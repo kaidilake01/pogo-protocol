@@ -26,13 +26,13 @@ contract LaunchFactoryV4 is LaunchFactoryV3 {
         deployer=address(standaloneTokenDeployer);if(deployer==address(0))revert InvalidConfig();
         initCodeHash=standaloneTokenDeployer.initCodeHash();
     }
-    function launchConfigHash(address quote) public view override returns(bytes32){
+    function launchConfigHash(address quote) public view virtual override returns(bytes32){
         return keccak256(abi.encode(super.launchConfigHash(quote),address(standaloneTokenDeployer),address(standaloneCurveDeployer),address(standaloneVaultDeployer)));
     }
     function predictTokenV3(address creator,bytes32 salt) public view override returns(address){
         return standaloneTokenDeployer.predict(effectiveSalt(creator,salt));
     }
     function _deployTokenV3(bytes32 salt) internal override returns(address){return standaloneTokenDeployer.deploy(salt);}
-    function _deployPoolV3() internal override returns(address){return standaloneCurveDeployer.deploy();}
-    function _deployVaultV3() internal override returns(address){return standaloneVaultDeployer.deploy();}
+    function _deployPoolV3() internal virtual override returns(address){return standaloneCurveDeployer.deploy();}
+    function _deployVaultV3() internal virtual override returns(address){return standaloneVaultDeployer.deploy();}
 }

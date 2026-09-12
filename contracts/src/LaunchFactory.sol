@@ -13,7 +13,7 @@ import {BondingCurve} from "./BondingCurve.sol";
 import {IV2Router} from "./Interfaces.sol";
 
 contract LaunchFactory is Ownable2StepUpgradeable, UUPSUpgradeable, ReentrancyGuard {
-    uint256 public constant CREATION_FEE = 0.01 ether;
+    function CREATION_FEE() public pure virtual returns (uint256) { return 0.01 ether; }
     uint256 public constant PROTOCOL_VERSION = 2;
     address public tokenImplementation;
     address public vaultImplementation;
@@ -136,7 +136,7 @@ contract LaunchFactory is Ownable2StepUpgradeable, UUPSUpgradeable, ReentrancyGu
     function createToken(CreateParams calldata p) external payable virtual nonReentrant returns (address token) {
         if (creationPaused) revert CreationPaused();
         if (
-            p.expectedImplementation != tokenImplementation || msg.value != CREATION_FEE
+            p.expectedImplementation != tokenImplementation || msg.value != CREATION_FEE()
                 || bytes(p.name).length == 0 || bytes(p.name).length > 64 || bytes(p.symbol).length == 0
                 || bytes(p.symbol).length > 12 || bytes(p.metadataURI).length > 256 || p.revenueBps > 500
                 || p.burnBps > 200 || uint256(p.holderShareBps) + p.buybackShareBps > 10_000
