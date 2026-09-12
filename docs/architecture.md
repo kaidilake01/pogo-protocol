@@ -10,12 +10,12 @@ The current factory is `LaunchFactoryV8`, an upgradeable factory with append-onl
 | StandardTokenDeployer / StandardLaunchToken | Full ERC-20 deployments, fixed taxes, holder-share synchronization |
 | QuoteAssetRegistryV7 | Supported quote assets; independent 0.01 BNB test target and original opening reserves |
 | ReflowCurveDeployer / ReflowCurve | DeFi curve, graduation and actual leftover reward funding |
-| ReflowMining | Flexible single-token, locked single-token and canonical V2 LP farming |
+| FixedAllocationMining | Flexible single-token, locked single-token and canonical V2 LP farming |
 | DirectedLaunchCurveDeployer | CZ transfer template; remaining tokens transfer to the fixed recipient |
 | QuoteVaultDeployer / QuoteRevenueVault | Paired-asset-only creator revenue and holder dividends |
 | BNBQuoteAdapter / BNBTradeRouter | Supported BNB-to-quote routes and BNB trade settlement |
 
-Template 9 uses ReflowCurve (curve version 11); template 10 uses DirectedLaunchCurve (curve version 9). Both use QuoteRevenueVault (`DIVIDEND_ASSET_VERSION = 1`). Factory `projectVersion` remains 3: it identifies the multi-asset ABI family, not the economic version. Read the actual project's contracts.
+Template 11 uses ReflowCurve (curve version 11) with FixedAllocationMining (mining version 13); template 10 uses DirectedLaunchCurve (curve version 9). Both use QuoteRevenueVault (`DIVIDEND_ASSET_VERSION = 1`). Factory `projectVersion` remains 3: it identifies the multi-asset ABI family, not the economic version. Read the actual project's contracts.
 
 ## Tax lifecycle
 

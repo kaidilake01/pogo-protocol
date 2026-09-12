@@ -12,7 +12,10 @@
     "contracts/src/v3/BNBTradeRouter.sol",
     "tests/contracts/QuoteRevenue.t.sol",
     "tests/contracts/QuoteRevenueFork.t.sol",
-    "tests/contracts/ReflowMining.t.sol"
+    "tests/contracts/ReflowMining.t.sol",
+    "contracts/src/v13/FixedAllocationMining.sol",
+    "tests/contracts/FixedAllocationMining.t.sol",
+    "tests/contracts/FixedAllocationFork.t.sol"
   ],
   "files": {
     "contracts/src/BondingCurve.sol": "f21255136c5a43b16cb69b58937fc608a8fa5ba8deb9387393719e9c299524a4",
@@ -69,6 +72,9 @@
     "tests/contracts/QuoteRevenueFork.t.sol": "b8e5cedfc834a20ddfd2ffc3a733201747b40cf186c900fbd9a33184064c7235",
     "tests/contracts/ReflowMining.t.sol": "c3581abe931d6975055b906d57a9ceccf9598c5c4a962cc98d4df64928a678e4",
     "tests/contracts/StandardCurve.t.sol": "6ca607f1fa3e2a91a0fafbc89d67a9148507287d20385a05b7cdf8556c87f13f",
-    "tests/contracts/TestBase.sol": "8a6c0a6e2d789fddd4b885dccd33055e2c9b49a7fc9a805ada89eea3ba9ff82d"
+    "tests/contracts/TestBase.sol": "8a6c0a6e2d789fddd4b885dccd33055e2c9b49a7fc9a805ada89eea3ba9ff82d",
+    "contracts/src/v13/FixedAllocationMining.sol": "b5ea6c11b69c6e69b4ce299039543cc4631fc0ec4a0c9ed358b64093172226f7",
+    "tests/contracts/FixedAllocationMining.t.sol": "d0fdeebc37279c3149b4a00e9763b2759d51c4c82b1f9397e320b7cd535defde",
+    "tests/contracts/FixedAllocationFork.t.sol": "4b7ecf7e0836541eacc354e5fb7ff9b7960a49f42813052dd6330bed29e9b6b7"
   }
 }

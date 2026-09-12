@@ -22,4 +22,4 @@ For internal routed sells, approve the pool as required by `sellFor`; for extern
 
 ## Template selection
 
-The launch readers and unsigned creation builders default to template 9. Pass template 10 for CZ transfer. Creation builders accept `templateId` after the optional factory address. They encode `createTokenWithTemplateV8` or `createTokenAndBuyWithTemplateV8`, and the launch config hash must come from the same template. The current public ABI includes `QuoteRevenueVault` and `ReflowMining`. Do not use project TOKEN as the dividend asset in a quote-only vault.
+The launch readers and unsigned creation builders default to template 11. Pass template 10 for CZ transfer. Creation builders accept `templateId` after the optional factory address. They encode `createTokenWithTemplateV8` or `createTokenAndBuyWithTemplateV8`, and the launch config hash must come from the same template. The current public ABI includes `QuoteRevenueVault` and `FixedAllocationMining`. Do not use project TOKEN as the dividend asset in a quote-only vault.

@@ -5,4 +5,4 @@ export { vaultAbi } from "./QuoteRevenueVault.js";
 export { registryAbi } from "./QuoteAssetRegistryV7.js";
 export { bnbRouterAbi } from "./BNBTradeRouter.js";
 export { adapterAbi } from "./BNBQuoteAdapter.js";
-export { miningAbi } from "./ReflowMining.js";
+export { miningAbi } from "./FixedAllocationMining.js";

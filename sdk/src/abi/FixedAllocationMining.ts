@@ -467,7 +467,7 @@ export const miningAbi = [
       {
         "name": "p",
         "type": "tuple",
-        "internalType": "struct ReflowMining.Pool",
+        "internalType": "struct FixedAllocationMining.Pool",
         "components": [
           {
             "name": "budget",
@@ -513,6 +513,25 @@ export const miningAbi = [
       }
     ],
     "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "rewardAllocationBps",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "uint8",
+        "internalType": "uint8"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "pure"
   },
   {
     "type": "function",

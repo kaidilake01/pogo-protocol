@@ -67,11 +67,11 @@ The examples accept `BSC_RPC_URL` for an optional RPC endpoint. They never load 
 | Parameter | Current templates |
 | --- | --- |
 | Supply | 1 billion tokens |
-| Templates | DeFi staking & liquidity mining (9); CZ transfer (10) |
+| Templates | DeFi staking & liquidity mining (11); CZ transfer (10) |
 | Current graduation target | 0.01 BNB equivalent for testing |
 | Opening reserves | Preserved independently of the graduation target |
 | Creator revenue / holder dividends | Paired asset on both curve and DEX |
-| Mining reward allocation | 1% flexible / 9% locked single / 90% V2 LP |
+| Mining reward allocation | 6.25% flexible / 31.25% locked single / 62.5% V2 LP (fixed reward budgets) |
 | Reward duration | 90 occupied days per pool; empty pools pause |
 | Locks | 24 hours per deposit; 10% early-exit principal deduction |
 | Early-exit destination | Single tokens and LP receipts to dEaD |

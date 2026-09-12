@@ -22,9 +22,11 @@ CZ transfer is an ordinary transfer to `0x28816c4C4792467390C90e5B426F198570E293
 
 | Pool | Share of actual reward budget | Principal lock |
 | --- | --- | --- |
-| Flexible single token | 1% | None |
-| Locked single token | 9% | 24 hours per deposit |
-| Canonical V2 LP | 90% | 24 hours per deposit |
+| Flexible single token | 6.25% | None |
+| Locked single token | 31.25% | 24 hours per deposit |
+| Canonical V2 LP | 62.5% | 24 hours per deposit |
+
+Template 11 fixes total mining rewards at 1:5:10 across these pools. Pool allocation does not change with participant counts or stake values. Inside each pool, participants earn in proportion to their stake; allocation ratios do not guarantee corresponding APR multiples. Old token pools retain their deployment-time budgets. Integer rounding dust remains in the LP budget so the three budgets sum to the total.
 
 Each pool consumes 90 occupied days of release time. Its clock pauses while nobody is staked; it neither burns empty-pool rewards nor emits them as a catch-up windfall. APR varies with reward rates and staked value. Rewards are the launched token; tax dividends are the paired asset. These are different revenue mechanisms.
 

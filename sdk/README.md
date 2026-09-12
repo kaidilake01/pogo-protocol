@@ -35,4 +35,4 @@ The package includes a dated public deployment snapshot. Resolve mutable configu
 
 ## Current templates
 
-Default template ID is 9 (DeFi); ID 10 is CZ transfer. `launchConfiguration(quoteAsset, templateId)` reads the matching hash. Pass the same ID as the fourth argument of `buildCreateTransaction` or the fifth argument of `buildCreateAndBuyTransaction` after the factory address. Vault and mining ABIs are exported as `vaultAbi` and `miningAbi`. Historical project rewards must use that project’s original ABI and asset.
+Default template ID is 11 (DeFi); ID 10 is CZ transfer. `launchConfiguration(quoteAsset, templateId)` reads the matching hash. Pass the same ID as the fourth argument of `buildCreateTransaction` or the fifth argument of `buildCreateAndBuyTransaction` after the factory address. Vault and mining ABIs are exported as `vaultAbi` and `miningAbi`. Historical project rewards must use that project’s original ABI and asset.

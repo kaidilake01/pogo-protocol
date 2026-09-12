@@ -126,7 +126,7 @@ export function buildCreateTransaction(
   p: LaunchParameters,
   creationFee: bigint,
   factory: Address = bscDeployment.factory,
-  templateId: bigint = 9n,
+  templateId: bigint = 11n,
 ): UnsignedTransaction {
   validateLaunch(p);
   if(templateId<1n||templateId>255n)throw Error("Invalid template ID");
@@ -146,7 +146,7 @@ export function buildCreateAndBuyTransaction(
   b: DeveloperBuy,
   creationFee: bigint,
   factory: Address = bscDeployment.factory,
-  templateId: bigint = 9n,
+  templateId: bigint = 11n,
 ): UnsignedTransaction {
   validateLaunch(p);
   if(templateId<1n||templateId>255n)throw Error("Invalid template ID");
@@ -248,7 +248,7 @@ export class PogoClient {
     if ((await this.client.getChainId()) !== 56)
       throw Error("Expected BNB Chain (56)");
   }
-  async launchConfiguration(quoteAsset: Address = zeroAddress, templateId: bigint = 9n) {
+  async launchConfiguration(quoteAsset: Address = zeroAddress, templateId: bigint = 11n) {
     await this.assertChain();
     const [registry, deployment, creationFee, creationPaused, configHash] =
       await Promise.all([
