@@ -10,9 +10,9 @@
     "contracts/src/v9/DirectedLaunchCurveDeployer.sol",
     "contracts/src/v3/BNBQuoteAdapter.sol",
     "contracts/src/v3/BNBTradeRouter.sol",
-    "contracts/test/QuoteRevenue.t.sol",
-    "contracts/test/QuoteRevenueFork.t.sol",
-    "contracts/test/ReflowMining.t.sol"
+    "tests/contracts/QuoteRevenue.t.sol",
+    "tests/contracts/QuoteRevenueFork.t.sol",
+    "tests/contracts/ReflowMining.t.sol"
   ],
   "files": {
     "contracts/src/BondingCurve.sol": "f21255136c5a43b16cb69b58937fc608a8fa5ba8deb9387393719e9c299524a4",
