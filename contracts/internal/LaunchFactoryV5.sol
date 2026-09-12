@@ -3,8 +3,8 @@ pragma solidity 0.8.28;
 import {LaunchFactoryV4} from "./LaunchFactoryV4.sol";
 import {QuoteAssetRegistry} from "./QuoteAssetRegistry.sol";
 import {QuoteAssetRegistryV3} from "./QuoteAssetRegistryV3.sol";
-import {StandaloneTokenDeployer} from "./v4/StandaloneTokenDeployer.sol";
-import {StandaloneCurveDeployer} from "./v4/StandaloneCurveDeployer.sol";
+import {StandaloneTokenDeployer} from "./StandaloneTokenDeployer.sol";
+import {StandaloneCurveDeployer} from "./StandaloneCurveDeployer.sol";
 
 /// @notice No new storage: install matching economics and standalone deployers in one owner transaction.
 contract LaunchFactoryV5 is LaunchFactoryV4 {

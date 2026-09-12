@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.28;
 import {LaunchTemplatesTest} from "./LaunchTemplates.t.sol";
-import {QuoteRevenueVault,QuoteVaultDeployer} from "../../contracts/src/v12/QuoteRevenueVault.sol";
-import {LaunchFactoryV8} from "../../contracts/src/LaunchFactoryV8.sol";
-import {LaunchFactoryV3} from "../../contracts/src/LaunchFactoryV3.sol";
-import {StandardLaunchToken} from "../../contracts/src/v5/StandardLaunchToken.sol";
-import {MiningCurve} from "../../contracts/src/v6/MiningCurve.sol";
-import {LaunchMining} from "../../contracts/src/v6/LaunchMining.sol";
-import {LaunchTypes} from "../../contracts/src/v3/LaunchTypes.sol";
+import {QuoteRevenueVault,QuoteVaultDeployer} from "../../contracts/src/RevenueVault.sol";
+import {LaunchFactoryV8} from "../../contracts/src/LaunchFactory.sol";
+import {LaunchFactoryV3} from "../../contracts/internal/LaunchFactoryV3.sol";
+import {StandardLaunchToken} from "../../contracts/src/LaunchToken.sol";
+import {MiningCurve} from "../../contracts/internal/MiningCurve.sol";
+import {LaunchMining} from "../../contracts/internal/LaunchMining.sol";
+import {LaunchTypes} from "../../contracts/internal/LaunchTypes.sol";
 import {QuoteMock,PriceMock} from "./QuoteAssets.t.sol";
-import {QuoteAssetRegistry} from "../../contracts/src/QuoteAssetRegistry.sol";
+import {QuoteAssetRegistry} from "../../contracts/internal/QuoteAssetRegistry.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {MockPair} from "./Mocks.sol";
 interface VmQuoteRevenue {function mockCallRevert(address,bytes calldata,bytes calldata) external;function clearMockedCalls() external;function etch(address,bytes calldata) external;}

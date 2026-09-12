@@ -2,16 +2,16 @@
 pragma solidity 0.8.28;
 
 import {StandardCurveTest} from "./StandardCurve.t.sol";
-import {QuoteAssetRegistryV4} from "../../contracts/src/QuoteAssetRegistryV4.sol";
-import {QuoteAssetRegistry} from "../../contracts/src/QuoteAssetRegistry.sol";
-import {LaunchFactoryV3} from "../../contracts/src/LaunchFactoryV3.sol";
-import {LaunchFactoryV6} from "../../contracts/src/LaunchFactoryV6.sol";
-import {StandardCurve} from "../../contracts/src/v5/StandardCurve.sol";
-import {StandardLaunchToken} from "../../contracts/src/v5/StandardLaunchToken.sol";
-import {BNBQuoteAdapter} from "../../contracts/src/v3/BNBQuoteAdapter.sol";
-import {LaunchTypes} from "../../contracts/src/v3/LaunchTypes.sol";
+import {QuoteAssetRegistryV4} from "../../contracts/internal/QuoteAssetRegistryV4.sol";
+import {QuoteAssetRegistry} from "../../contracts/internal/QuoteAssetRegistry.sol";
+import {LaunchFactoryV3} from "../../contracts/internal/LaunchFactoryV3.sol";
+import {LaunchFactoryV6} from "../../contracts/internal/LaunchFactoryV6.sol";
+import {StandardCurve} from "../../contracts/internal/StandardCurve.sol";
+import {StandardLaunchToken} from "../../contracts/src/LaunchToken.sol";
+import {BNBQuoteAdapter} from "../../contracts/src/BNBQuoteAdapter.sol";
+import {LaunchTypes} from "../../contracts/internal/LaunchTypes.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {IV2Router} from "../../contracts/src/Interfaces.sol";
+import {IV2Router} from "../../contracts/internal/Interfaces.sol";
 
 interface IPancakeMigrationTest is IV2Router {
     function swapExactETHForTokensSupportingFeeOnTransferTokens(uint256, address[] calldata, address, uint256) external payable;

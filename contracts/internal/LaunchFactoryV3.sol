@@ -4,11 +4,11 @@ pragma solidity 0.8.28;
 import {Clones} from "@openzeppelin/contracts/proxy/Clones.sol";
 import {LaunchFactory} from "./LaunchFactory.sol";
 import {QuoteAssetRegistry} from "./QuoteAssetRegistry.sol";
-import {LaunchTypes} from "./v3/LaunchTypes.sol";
-import {LaunchTokenV3} from "./v3/LaunchTokenV3.sol";
-import {MultiAssetCurve} from "./v3/MultiAssetCurve.sol";
-import {RevenueVault} from "./v3/RevenueVault.sol";
-import {BNBQuoteAdapter} from "./v3/BNBQuoteAdapter.sol";
+import {LaunchTypes} from "./LaunchTypes.sol";
+import {LaunchTokenV3} from "./LaunchTokenV3.sol";
+import {MultiAssetCurve} from "./MultiAssetCurve.sol";
+import {RevenueVault} from "./RevenueVault.sol";
+import {BNBQuoteAdapter} from "../src/BNBQuoteAdapter.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 

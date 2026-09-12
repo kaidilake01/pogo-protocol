@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.28;
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {StandaloneVault} from "../v4/StandaloneVault.sol";
+import {StandaloneVault} from "./StandaloneVault.sol";
 import {LaunchMining} from "./LaunchMining.sol";
 
 /// @notice Wallet plus staked principal keeps the original per-person dividend eligibility.

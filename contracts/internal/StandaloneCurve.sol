@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.28;
-import {MultiAssetCurve} from "../v3/MultiAssetCurve.sol";
+import {MultiAssetCurve} from "./MultiAssetCurve.sol";
 
 contract StandaloneCurve is MultiAssetCurve {
     address private immutable launchFactory;

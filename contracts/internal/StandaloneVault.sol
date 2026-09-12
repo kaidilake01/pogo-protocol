@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.28;
-import {RevenueVault} from "../v3/RevenueVault.sol";
-import {LaunchTypes} from "../v3/LaunchTypes.sol";
+import {RevenueVault} from "./RevenueVault.sol";
+import {LaunchTypes} from "./LaunchTypes.sol";
 
 contract StandaloneVault is RevenueVault {
     address private immutable launchFactory;

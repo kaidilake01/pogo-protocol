@@ -2,7 +2,7 @@
 pragma solidity 0.8.28;
 
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import {LaunchTokenV3} from "../v3/LaunchTokenV3.sol";
+import {LaunchTokenV3} from "./LaunchTokenV3.sol";
 
 /// @notice Full ERC20 runtime, with no delegatecall or upgrade mechanism.
 /// Ownership is relinquished in the constructor. Only one-time atomic factory initialization remains.

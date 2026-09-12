@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.28;
-import {ReflowCurve} from "./ReflowCurve.sol";
+import {ReflowCurve} from "./MiningCurve.sol";
 contract ReflowCurveDeployer {
     address public immutable factory;
     address public immutable miningDeployer;

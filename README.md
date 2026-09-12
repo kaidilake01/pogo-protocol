@@ -30,7 +30,8 @@ This repository contains the protocol source snapshot and a source-distributed S
 ## Repository layout
 
 ```text
-contracts/src/       Solidity contracts, including inherited legacy versions
+contracts/src/       Current production contracts, organized by function
+contracts/internal/ Required implementation dependencies, not launch alternatives
 sdk/                 TypeScript readers, ABIs, math and unsigned transaction builders
 tests/contracts/     Deterministic Solidity tests and fuzz tests
 tests/sdk/           SDK regression tests

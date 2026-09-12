@@ -2,8 +2,8 @@
 pragma solidity 0.8.28;
 
 import {TestBase} from "./TestBase.sol";
-import {QuoteAssetRegistry, IAtlasMultiQuote} from "../../contracts/src/QuoteAssetRegistry.sol";
-import {MultiAssetCurve} from "../../contracts/src/v3/MultiAssetCurve.sol";
+import {QuoteAssetRegistry, IAtlasMultiQuote} from "../../contracts/internal/QuoteAssetRegistry.sol";
+import {MultiAssetCurve} from "../../contracts/internal/MultiAssetCurve.sol";
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {Clones} from "@openzeppelin/contracts/proxy/Clones.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";

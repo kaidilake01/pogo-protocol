@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.28;
 import {LaunchFactoryV3} from "./LaunchFactoryV3.sol";
-import {StandaloneTokenDeployer} from "./v4/StandaloneTokenDeployer.sol";
-import {StandaloneCurveDeployer} from "./v4/StandaloneCurveDeployer.sol";
-import {StandaloneVaultDeployer} from "./v4/StandaloneVaultDeployer.sol";
+import {StandaloneTokenDeployer} from "./StandaloneTokenDeployer.sol";
+import {StandaloneCurveDeployer} from "./StandaloneCurveDeployer.sol";
+import {StandaloneVaultDeployer} from "./StandaloneVaultDeployer.sol";
 
 /// @notice V3 ABI and accounting with standalone project contracts. All prior storage is preserved.
 contract LaunchFactoryV4 is LaunchFactoryV3 {

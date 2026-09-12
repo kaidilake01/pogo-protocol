@@ -4,20 +4,29 @@ pragma solidity 0.8.28;
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {Math} from "@openzeppelin/contracts/utils/math/Math.sol";
+import {ReflowMining, ReflowMiningDeployer} from "../internal/ReflowMining.sol";
+import {MiningRevenueVault} from "../internal/MiningRevenueVault.sol";
+import {QuoteAssetRegistry} from "../internal/QuoteAssetRegistry.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import {IV2Factory, IV2Router, IV2Pair, IWBNB} from "../Interfaces.sol";
-import {ILaunchTokenV3, IRevenueVaultV3} from "../v3/LaunchTypes.sol";
+import {IV2Factory, IV2Router, IV2Pair, IWBNB} from "../internal/Interfaces.sol";
+import {ILaunchTokenV3, IRevenueVaultV3} from "../internal/LaunchTypes.sol";
 
 /// @notice Quotes, collateral, taxes and graduation all use the same immutable asset.
-/// FOUR standard virtual-reserve economics; full runtime and immutable terms per launch.
+/// Preserves the original initial virtual reserves, with an independent early graduation target.
+interface IMiningFactoryConfig { function quoteRegistry() external view returns(address); }
 interface IPairCodeHash { function INIT_CODE_PAIR_HASH() external view returns(bytes32); }
-contract StandardCurve is ReentrancyGuard {
+contract ReflowCurve is ReentrancyGuard {
     using SafeERC20 for IERC20;
-    uint256 public constant VERSION = 5;
+    uint256 public constant VERSION = 11;
     uint256 public constant PLATFORM_BPS = 100;
     uint256 public constant INITIAL_SUPPLY = 1_000_000_000 ether;
-    uint256 public constant SALE_SUPPLY = 800_000_000 ether;
-    uint256 public constant LP_SUPPLY = 200_000_000 ether;
+    uint256 public constant INITIAL_VIRTUAL_TOKENS = (uint256(800_000_000 ether) * 98 + 72) / 73;
+    uint256 public saleTarget;
+    address public immutable miningDeployer;
+    address public stakingPool;
+    address public pricingRegistry;
+    uint256 public miningBudget;
+    uint256 public miningReleased;
     uint256 public constant SEEDING_FEE_BPS = 200;
     uint256 public virtualTokenOffset;
     address private immutable launchFactory;
@@ -55,21 +64,27 @@ contract StandardCurve is ReentrancyGuard {
         uint256 tokenAmount, uint256 lp, uint256 surplusBurned);
     event PlatformClaimed(uint256 amount);
 
-    constructor(address factory_) {
+    constructor(address factory_, address miningDeployer_) {
         if(factory_.code.length==0)revert InvalidConfig();
         launchFactory=factory_;
+        if(miningDeployer_.code.length==0)revert InvalidConfig();
+        miningDeployer=miningDeployer_;
     }
     function initialize(Init calldata p) public virtual {
         if (msg.sender!=launchFactory || initialized || p.token.code.length == 0 || p.vault.code.length == 0 || p.treasury == address(0)
-            || p.router.code.length == 0 || p.virtualQuote < 1e6 || p.graduationTarget < p.virtualQuote
-            || p.virtualQuote!=Math.mulDiv(p.graduationTarget,25,73,Math.Rounding.Ceil)
+            || p.router.code.length == 0 || p.virtualQuote < 1e6 || p.graduationTarget == 0
             || p.graduationTarget > type(uint112).max || p.quoteDecimals < 6 || p.quoteDecimals > 18
             || (p.quoteAsset != address(0) && p.quoteAsset.code.length == 0)) revert InvalidConfig();
         initialized = true; initializerFactory=msg.sender;
         token=p.token; vault=p.vault; treasury=p.treasury; router=p.router;
         quoteAsset=p.quoteAsset; quoteDecimals=p.quoteDecimals;
         virtualQuote=p.virtualQuote; graduationTarget=p.graduationTarget; reserveTokens=INITIAL_SUPPLY;
-        virtualTokenOffset=Math.mulDiv(SALE_SUPPLY,p.virtualQuote+p.graduationTarget,p.graduationTarget,Math.Rounding.Ceil)-INITIAL_SUPPLY;
+        virtualTokenOffset=INITIAL_VIRTUAL_TOKENS-INITIAL_SUPPLY;
+        saleTarget=Math.mulDiv(INITIAL_VIRTUAL_TOKENS,p.graduationTarget,p.virtualQuote+p.graduationTarget);
+        if(saleTarget==0||saleTarget>=INITIAL_SUPPLY)revert InvalidConfig();
+        pricingRegistry=IMiningFactoryConfig(launchFactory).quoteRegistry();
+        stakingPool=ReflowMiningDeployer(miningDeployer).deploy(p.token,p.vault);
+        MiningRevenueVault(payable(p.vault)).setStakingPool(stakingPool);
         address settled=p.quoteAsset==address(0)?IV2Router(p.router).WETH():p.quoteAsset;
         address factory=IV2Router(p.router).factory();
         (address a,address b)=p.token<settled?(p.token,settled):(settled,p.token);
@@ -90,7 +105,7 @@ contract StandardCurve is ReentrancyGuard {
         // 1e18 quote tokens per whole launch token, independent of the quote token's decimals.
         return Math.mulDiv(virtualQuote + reserveQuote, 1e36, reserveTokens+virtualTokenOffset) / 10 ** quoteDecimals;
     }
-    function progressBps() external view returns (uint256) { return Math.min(10_000,(INITIAL_SUPPLY-reserveTokens)*10_000/SALE_SUPPLY); }
+    function progressBps() external view returns (uint256) { return Math.min(10_000,(INITIAL_SUPPLY-reserveTokens)*10_000/saleTarget); }
     function quoteBuy(uint256 amount) public view returns (BuyQuote memory q) {
         q.refund=amount;
         if (graduated || reserveQuote >= graduationTarget || amount == 0) return q;
@@ -103,8 +118,8 @@ contract StandardCurve is ReentrancyGuard {
         q.net=q.used-q.platformFee-q.tax;
         // Refund sub-unit rounding excess rather than introducing a tax on a tax-free launch.
         if(q.net>remaining) { q.used-=q.net-remaining; q.net=remaining; }
-        q.tokens=q.net==remaining?reserveTokens-LP_SUPPLY:
-            Math.min(reserveTokens-LP_SUPPLY,Math.mulDiv(reserveTokens+virtualTokenOffset,q.net,virtualQuote+reserveQuote+q.net));
+        q.tokens=q.net==remaining?reserveTokens-(INITIAL_SUPPLY-saleTarget):
+            Math.min(reserveTokens-(INITIAL_SUPPLY-saleTarget),Math.mulDiv(reserveTokens+virtualTokenOffset,q.net,virtualQuote+reserveQuote+q.net));
         q.refund=amount-q.used;
     }
     function buy(uint256 amount, uint256 minTokens, uint256 deadline, address recipient) external payable nonReentrant {
@@ -173,16 +188,36 @@ contract StandardCurve is ReentrancyGuard {
         uint256 quote=reserveQuote-seedingFee;
         platformCredit+=seedingFee;
         // Identical spot price on both sides of graduation; phantom reserves never become real liquidity.
-        uint256 seed=LP_SUPPLY;
+        uint256 seed=Math.mulDiv(quote,reserveTokens+virtualTokenOffset,virtualQuote+reserveQuote);
         uint256 surplus=IERC20(token).balanceOf(address(this))-seed;
         graduated=true; pair=p;
-        if(surplus!=0) ILaunchTokenV3(token).burn(surplus);
+        miningBudget=surplus;
         ILaunchTokenV3(token).activatePair(p);
         IERC20(token).safeTransfer(p,seed);
         if(quoteAsset==address(0)) IWBNB(settled).deposit{value:quote}();
         IERC20(settled).safeTransfer(p,quote);
         uint256 lp=IV2Pair(p).mint(address(0xdead));
-        emit GraduationV3(token,p,quoteAsset,quote,seed,lp,surplus);
+        ReflowMining(stakingPool).activate(surplus,p);
+        emit GraduationV3(token,p,quoteAsset,quote,seed,lp,0);
+        emit MiningFunded(stakingPool,surplus);
+    }
+    event MiningFunded(address indexed stakingPool,uint256 rewards);
+    function releaseMiningReward(address recipient,uint256 amount) external nonReentrant {
+        if(msg.sender!=stakingPool||!graduated||recipient==address(0)||amount>miningBudget-miningReleased)revert InvalidConfig();
+        miningReleased+=amount;IERC20(token).safeTransfer(recipient,amount);
+    }
+    /// @notice Snapshot for cost-based UI statistics; this price never determines mining payouts.
+    function stakingPriceUSD() external view returns(uint256) {
+        if(!graduated)return 0;
+        (uint112 r0,uint112 r1,)=IV2Pair(pair).getReserves();
+        bool first=IV2Pair(pair).token0()==token;
+        uint256 tokenReserve=first?r0:r1;
+        uint256 quoteReserve=first?r1:r0;
+        if(tokenReserve==0)return 0;
+        (uint256 usd,)=QuoteAssetRegistry(pricingRegistry).priceUsd(quoteAsset);
+        // Normalize before division: six-decimal quotes must not round tiny token prices to zero.
+        uint256 normalized = quoteDecimals <= 18 ? quoteReserve * 10**(18-quoteDecimals) : quoteReserve / 10**(quoteDecimals-18);
+        return Math.mulDiv(normalized,usd,tokenReserve);
     }
     function claimPlatform() external nonReentrant {
         uint256 amount=platformCredit;

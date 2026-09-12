@@ -4,9 +4,9 @@ pragma solidity 0.8.28;
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import {IWBNB} from "../Interfaces.sol";
+import {IWBNB} from "../internal/Interfaces.sol";
 import {BNBQuoteAdapter,IPancakeV3Input,IPancakeV2Input} from "./BNBQuoteAdapter.sol";
-import {MultiAssetCurve} from "./MultiAssetCurve.sol";
+import {MultiAssetCurve} from "../internal/MultiAssetCurve.sol";
 
 interface ITradingFactory {
     function projects(address) external view returns(address creator,address pool,address vault,uint64 createdAt);

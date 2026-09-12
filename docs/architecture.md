@@ -27,4 +27,4 @@ Optional buyback or liquidity processing runs in an isolated subcall: failure ca
 
 ## Source organization
 
-Only current production entrypoints, their transitive imports, and the selected regression tests' dependencies are included. Versioned paths still imported by the current factory are dependencies, not alternative launch recommendations. Deleting them would break compilation or alter verification metadata. Superseded snapshots remain in Git history; build outputs, private journals and secrets are excluded.
+Current production entrypoints are grouped by function in `contracts/src`. Required inheritance, compatibility implementations and test dependencies are in `contracts/internal`. The [contract directory guide](../contracts/README.md) identifies each current file and links to the original verification layout. Solidity contract names are retained, but release-number directories are no longer used. Superseded snapshots remain in Git history; build outputs, private journals and secrets are excluded.

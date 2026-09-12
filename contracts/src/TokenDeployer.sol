@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.28;
-import {StandardLaunchToken} from "./StandardLaunchToken.sol";
+import {StandardLaunchToken} from "./LaunchToken.sol";
 contract StandardTokenDeployer {
     address public immutable factory;
     uint256 public constant KIND=1;

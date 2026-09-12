@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.28;
 import {MiningGraduationTest} from "./MiningGraduation.t.sol";
-import {LaunchFactoryV8} from "../../contracts/src/LaunchFactoryV8.sol";
-import {LaunchFactoryV3} from "../../contracts/src/LaunchFactoryV3.sol";
-import {FairLaunchCurve} from "../../contracts/src/v7/FairLaunchCurve.sol";
-import {FairLaunchCurveDeployer} from "../../contracts/src/v7/FairLaunchCurveDeployer.sol";
-import {MiningCurve} from "../../contracts/src/v6/MiningCurve.sol";
-import {LaunchMining} from "../../contracts/src/v6/LaunchMining.sol";
-import {StandardLaunchToken} from "../../contracts/src/v5/StandardLaunchToken.sol";
+import {LaunchFactoryV8} from "../../contracts/src/LaunchFactory.sol";
+import {LaunchFactoryV3} from "../../contracts/internal/LaunchFactoryV3.sol";
+import {FairLaunchCurve} from "../../contracts/internal/FairLaunchCurve.sol";
+import {FairLaunchCurveDeployer} from "../../contracts/internal/FairLaunchCurveDeployer.sol";
+import {MiningCurve} from "../../contracts/internal/MiningCurve.sol";
+import {LaunchMining} from "../../contracts/internal/LaunchMining.sol";
+import {StandardLaunchToken} from "../../contracts/src/LaunchToken.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract LaunchTemplatesTest is MiningGraduationTest {

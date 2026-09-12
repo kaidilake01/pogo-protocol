@@ -3,9 +3,9 @@ pragma solidity 0.8.28;
 import {LaunchFactoryV6} from "./LaunchFactoryV6.sol";
 import {QuoteAssetRegistry} from "./QuoteAssetRegistry.sol";
 import {QuoteAssetRegistryV5} from "./QuoteAssetRegistryV5.sol";
-import {StandaloneTokenDeployer} from "./v4/StandaloneTokenDeployer.sol";
-import {StandaloneCurveDeployer} from "./v4/StandaloneCurveDeployer.sol";
-import {StandaloneVaultDeployer} from "./v4/StandaloneVaultDeployer.sol";
+import {StandaloneTokenDeployer} from "./StandaloneTokenDeployer.sol";
+import {StandaloneCurveDeployer} from "./StandaloneCurveDeployer.sol";
+import {StandaloneVaultDeployer} from "./StandaloneVaultDeployer.sol";
 
 /// @notice No storage additions; immutable mining terms are installed only for future launches.
 contract LaunchFactoryV7 is LaunchFactoryV6 {

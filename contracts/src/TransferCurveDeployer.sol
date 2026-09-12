@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.28;
-import {DirectedLaunchCurve} from "./DirectedLaunchCurve.sol";
+import {DirectedLaunchCurve} from "./TransferCurve.sol";
 contract DirectedLaunchCurveDeployer {
     address public immutable factory;
     uint256 public constant KIND=2;

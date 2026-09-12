@@ -2,7 +2,7 @@
 pragma solidity 0.8.28;
 import {TestBase} from "./TestBase.sol";
 import {MockAsset} from "./Mocks.sol";
-import {FixedAllocationMining} from "../../contracts/src/v13/FixedAllocationMining.sol";
+import {FixedAllocationMining} from "../../contracts/src/Mining.sol";
 
 contract FixedAllocationPairMock is MockAsset {
     address public token0;address public token1=address(1);

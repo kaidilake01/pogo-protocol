@@ -7,18 +7,15 @@ import {Math} from "@openzeppelin/contracts/utils/math/Math.sol";
 
 
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import {IV2Factory, IV2Router, IV2Pair, IWBNB} from "../Interfaces.sol";
-import {ILaunchTokenV3, IRevenueVaultV3} from "../v3/LaunchTypes.sol";
+import {IV2Factory, IV2Router, IV2Pair, IWBNB} from "./Interfaces.sol";
+import {ILaunchTokenV3, IRevenueVaultV3} from "./LaunchTypes.sol";
 
 /// @notice Quotes, collateral, taxes and graduation all use the same immutable asset.
 /// Preserves the original initial virtual reserves, with an independent early graduation target.
 interface IPairCodeHash { function INIT_CODE_PAIR_HASH() external view returns(bytes32); }
-/// @notice Graduation remainder is an ordinary transfer: transferable and eligible for holder rewards.
-/// No recipient identity or endorsement is asserted by this contract.
-contract DirectedLaunchCurve is ReentrancyGuard {
+contract FairLaunchCurve is ReentrancyGuard {
     using SafeERC20 for IERC20;
-    uint256 public constant VERSION = 9;
-    address public constant SURPLUS_DESTINATION = 0x28816c4C4792467390C90e5B426F198570E29307;
+    uint256 public constant VERSION = 7;
     uint256 public constant PLATFORM_BPS = 100;
     uint256 public constant INITIAL_SUPPLY = 1_000_000_000 ether;
     uint256 public constant INITIAL_VIRTUAL_TOKENS = (uint256(800_000_000 ether) * 98 + 72) / 73;
@@ -60,7 +57,6 @@ contract DirectedLaunchCurve is ReentrancyGuard {
         uint256 price, uint256 reserveQuote, uint256 platformFee, uint256 tax);
     event GraduationV3(address indexed token, address indexed pair, address quoteAsset, uint256 quoteAmount,
         uint256 tokenAmount, uint256 lp, uint256 surplusBurned);
-    event SurplusTransferred(address indexed token,address indexed destination,uint256 amount);
     event PlatformClaimed(uint256 amount);
 
     constructor(address factory_) {
@@ -191,10 +187,8 @@ contract DirectedLaunchCurve is ReentrancyGuard {
         if(quoteAsset==address(0)) IWBNB(settled).deposit{value:quote}();
         IERC20(settled).safeTransfer(p,quote);
         uint256 lp=IV2Pair(p).mint(address(0xdead));
-        if(surplus!=0) IERC20(token).safeTransfer(SURPLUS_DESTINATION,surplus);
-        emit SurplusTransferred(token,SURPLUS_DESTINATION,surplus);
-        // Retain the legacy event ABI; no tokens were burned from totalSupply.
-        emit GraduationV3(token,p,quoteAsset,quote,seed,lp,0);
+        if(surplus!=0) ILaunchTokenV3(token).burn(surplus);
+        emit GraduationV3(token,p,quoteAsset,quote,seed,lp,surplus);
     }
     function claimPlatform() external nonReentrant {
         uint256 amount=platformCredit;

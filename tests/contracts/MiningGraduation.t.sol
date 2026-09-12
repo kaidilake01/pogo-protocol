@@ -2,19 +2,19 @@
 pragma solidity 0.8.28;
 import {StandardCurveTest} from "./StandardCurve.t.sol";
 import {QuoteMock,PriceMock} from "./QuoteAssets.t.sol";
-import {QuoteAssetRegistryV5} from "../../contracts/src/QuoteAssetRegistryV5.sol";
-import {QuoteAssetRegistry} from "../../contracts/src/QuoteAssetRegistry.sol";
-import {LaunchFactoryV3} from "../../contracts/src/LaunchFactoryV3.sol";
-import {LaunchFactoryV7} from "../../contracts/src/LaunchFactoryV7.sol";
-import {MiningCurve} from "../../contracts/src/v6/MiningCurve.sol";
-import {MiningCurveDeployer} from "../../contracts/src/v6/MiningCurveDeployer.sol";
-import {MiningRevenueVault,MiningVaultDeployer} from "../../contracts/src/v6/MiningRevenueVault.sol";
-import {LaunchMining,LaunchMiningDeployer} from "../../contracts/src/v6/LaunchMining.sol";
-import {StandardLaunchToken} from "../../contracts/src/v5/StandardLaunchToken.sol";
-import {StandardCurve} from "../../contracts/src/v5/StandardCurve.sol";
+import {QuoteAssetRegistryV5} from "../../contracts/internal/QuoteAssetRegistryV5.sol";
+import {QuoteAssetRegistry} from "../../contracts/internal/QuoteAssetRegistry.sol";
+import {LaunchFactoryV3} from "../../contracts/internal/LaunchFactoryV3.sol";
+import {LaunchFactoryV7} from "../../contracts/internal/LaunchFactoryV7.sol";
+import {MiningCurve} from "../../contracts/internal/MiningCurve.sol";
+import {MiningCurveDeployer} from "../../contracts/internal/MiningCurveDeployer.sol";
+import {MiningRevenueVault,MiningVaultDeployer} from "../../contracts/internal/MiningRevenueVault.sol";
+import {LaunchMining,LaunchMiningDeployer} from "../../contracts/internal/LaunchMining.sol";
+import {StandardLaunchToken} from "../../contracts/src/LaunchToken.sol";
+import {StandardCurve} from "../../contracts/internal/StandardCurve.sol";
 import {IPancakeMigrationTest} from "./GraduationTarget.t.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {LaunchTypes} from "../../contracts/src/v3/LaunchTypes.sol";
+import {LaunchTypes} from "../../contracts/internal/LaunchTypes.sol";
 
 contract MiningGraduationTest is StandardCurveTest {
     function install() internal returns(QuoteAssetRegistryV5 next) {
