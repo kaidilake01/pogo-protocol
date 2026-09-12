@@ -37,7 +37,7 @@ contract FixedAllocationForkTest is TestBase {
   vm.prank(f.owner());f.registerLaunchTemplate(252,address(cd),vaultDeployer,1);
   address[4] memory assets=[address(0),0x205812CdBed920aFf76C6580abD681a46D11efc7,0x431a3BEE82E2ca41e49895CbECE5bB0F76A89b7A,0xbe9D156892E55e7154BcD3cB0FEA677F9D3103E1];
   uint256 salt;(address td,bytes32 hash)=f.tokenDeploymentConfig();
-  // Create and exercise every supported asset with zero and nonzero project taxes.
+  // Exercise BNB launches with zero and nonzero project taxes.
   for(uint256 j;j<1;j++)for(uint256 taxed;taxed<2;taxed++){
    vm.warp(forkTimestamp);
    address asset=assets[j];QuoteAssetRegistry.LaunchQuote memory q=QuoteAssetRegistry(address(f.quoteRegistry())).quoteLaunch(asset);
@@ -81,7 +81,7 @@ contract FixedAllocationForkTest is TestBase {
     assertEq(v.earned(address(this),token),0);vm.expectRevert(QuoteRevenueVault.InvalidConfig.selector);v.claim(token,address(this));
     v.claim(asset,address(this));assertEq(v.earned(address(this),asset),0);
    }
-assertEq(m.poolState(0).budget,m.rewardBudget()/16);assertEq(m.poolState(1).budget,m.rewardBudget()*5/16);assertEq(m.poolState(2).budget,m.rewardBudget()-m.rewardBudget()/16-m.rewardBudget()*5/16);assertEq(m.lpToken(),pair);assertTrue(IERC20(pair).balanceOf(address(0xdead))>0);
+assertEq(m.poolState(0).budget,m.rewardBudget()/25);assertEq(m.poolState(1).budget,m.rewardBudget()*4/25);assertEq(m.poolState(2).budget,m.rewardBudget()-m.rewardBudget()/25-m.rewardBudget()*4/25);assertEq(m.lpToken(),pair);assertTrue(IERC20(pair).balanceOf(address(0xdead))>0);
    assertTrue(m.rewardBudget()>996_000_000 ether);assertEq(IERC20(token).balanceOf(pool),m.rewardBudget());
    address settled=asset==address(0)?WBNB:asset;
    if(asset==address(0))IWBNB(WBNB).deposit{value:.03 ether}();

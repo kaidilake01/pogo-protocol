@@ -65,7 +65,7 @@
     "contracts/src/TokenDeployer.sol": "e427f43d5e01192bfdc3f639a1d46908b32bbf8ceb148e075392e769c4de45a2",
     "contracts/src/TransferCurve.sol": "bb0ec5428b7aef8e5acf032615e4d59b0cf0173f188b594710366e565d97da6a",
     "contracts/src/TransferCurveDeployer.sol": "ccae6c250eb1bae57c8d8fc1d71a690317dac16dabfe8422407e5ee645821a94",
-    "tests/contracts/FixedAllocationFork.t.sol": "78e9d3fedb99db50826a637142ec4ff5ca9fafa1f2a1dfc52228cb81524d37ec",
+    "tests/contracts/FixedAllocationFork.t.sol": "36921a978ee770204fc21734a97329470ee7f2daf95ae26d1850485155750a41",
     "tests/contracts/FixedAllocationMining.t.sol": "5c4ede8d1307b73c5223570c9b0346d031c250f42c0635a06a6c3b9e8153b1d9",
     "tests/contracts/GraduationTarget.t.sol": "3160e7aa2ccd1b2cdffb8ac4abfe451d9751629f5c4a8997db0cd814a445f4f7",
     "tests/contracts/LaunchTemplates.t.sol": "9d0b264110533320fd1736605b6847936e7e88360bf268ccc23c7bb8856fe95d",
