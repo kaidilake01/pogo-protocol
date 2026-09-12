@@ -20,11 +20,11 @@ CZ transfer is an ordinary transfer to `0x28816c4C4792467390C90e5B426F198570E293
 
 | Pool | Share of actual reward budget | Principal lock |
 | --- | --- | --- |
-| Flexible single token | 6.25% | None |
-| Locked single token | 31.25% | 24 hours per deposit |
-| Canonical V2 LP | 62.5% | 24 hours per deposit |
+| Flexible single token | 4% | None |
+| Locked single token | 16% | 24 hours per deposit |
+| Canonical V2 LP | 80% | 24 hours per deposit |
 
-Template 11 fixes total mining rewards at 1:5:10 across these pools. Pool allocation does not change with participant counts or stake values. Inside each pool, participants earn in proportion to their stake; allocation ratios do not guarantee corresponding APR multiples. Old token pools retain their deployment-time budgets. Integer rounding dust remains in the LP budget so the three budgets sum to the total.
+Template 12 fixes total mining rewards at 1:4:20 across these pools. Pool allocation does not change with participant counts or stake values. Inside each pool, participants earn in proportion to their stake; allocation ratios do not guarantee corresponding APR multiples. Old token pools retain their deployment-time budgets. Integer rounding dust remains in the LP budget so the three budgets sum to the total.
 
 Each pool consumes 90 occupied days of release time. Its clock pauses while nobody is staked; it neither burns empty-pool rewards nor emits them as a catch-up windfall. APR varies with reward rates and staked value. Rewards are the launched token; tax dividends are the paired asset. These are different revenue mechanisms.
 
@@ -32,6 +32,6 @@ Before the 24-hour unlock, early principal withdrawal deducts 10%. Single-token 
 
 ## Reading the displayed APR
 
-For a populated pool, daily token emission is its fixed reward budget divided by 90 active days. APR is `daily emission × reward-token price × 365 ÷ current staked principal value`. LP principal includes both underlying assets. This annualizes the current rate; it does not promise a year of rewards or automatic compounding. Participation and asset prices change the estimate. The 1:5:10 budget ratio does not fix APR ratios across pools.
+For a populated pool, daily token emission is its fixed reward budget divided by 90 active days. APR is `daily emission × reward-token price × 365 ÷ current staked principal value`. LP principal includes both underlying assets. This annualizes the current rate; it does not promise a year of rewards or automatic compounding. Participation and asset prices change the estimate. The 1:4:20 budget ratio does not fix APR ratios across pools.
 
 The [current rules snapshot](current-rules.json) is shared with the website documentation. For a specific existing token, read its own deployed contracts.

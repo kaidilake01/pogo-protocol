@@ -15,7 +15,7 @@ The current factory is `LaunchFactoryV8`, an upgradeable factory with append-onl
 | QuoteVaultDeployer / QuoteRevenueVault | Paired-asset-only creator revenue and holder dividends |
 | BNBQuoteAdapter / BNBTradeRouter | Supported BNB-to-quote routes and BNB trade settlement |
 
-Template 11 uses ReflowCurve (curve version 11) with FixedAllocationMining (mining version 13); template 10 uses DirectedLaunchCurve (curve version 9). Both use QuoteRevenueVault (`DIVIDEND_ASSET_VERSION = 1`). Factory `projectVersion` remains 3: it identifies the multi-asset ABI family, not the economic version. Read the actual project's contracts.
+Template 12 uses ReflowCurve (curve version 11) with FixedAllocationMining (mining version 14); template 10 uses DirectedLaunchCurve (curve version 9). Both use QuoteRevenueVault (`DIVIDEND_ASSET_VERSION = 1`). Factory `projectVersion` remains 3: it identifies the multi-asset ABI family, not the economic version. Read the actual project's contracts.
 
 ## Tax lifecycle
 

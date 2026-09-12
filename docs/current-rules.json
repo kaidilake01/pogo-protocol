@@ -3,12 +3,12 @@
   "chainId": 56,
   "graduationTargetBNB": "0.01",
   "creationFeeWei": "0",
-  "miningTemplateId": 11,
+  "miningTemplateId": 12,
   "transferTemplateId": 10,
   "rewardSplitBps": [
-    625,
-    3125,
-    6250
+    400,
+    1600,
+    8000
   ],
   "activeDays": 90,
   "lockHours": 24,
@@ -19,11 +19,11 @@
     "factory": "0x0abc6174ee9f9600243D14F83E215993b8BbABEb",
     "implementation": "0xc8C820a3DEc5666E9a4B02275E293a6f15f4b813",
     "registry": "0x65b2dfae97e405a6435922d7c0d5431807bcd2bb",
-    "miningCurveDeployer": "0xd6253A2a4475Ca5Be9c025FbCd7932485Ca317cA",
-    "miningDeployer": "0x97cA4D7458165567e6865942B7e33C78EC1524b8",
+    "miningCurveDeployer": "0x17160724C60bA4eA8d0C18690bd73d9c844eD388",
+    "miningDeployer": "0x066997F23fc2ba8006D340c75925582B7f253e62",
     "vaultDeployer": "0xD8FeFE95d325c918a4c7E2754967567E41922cc3",
     "transferCurveDeployer": "0x5D7B1415888d64b5023Fa0ad16C7016aC98a39A5",
     "pepe": "0x25d887Ce7a35172C62FeBFD67a1856F20FaEbB00",
-    "pepeFeed": "0x9Af7F333b5805E2Bc017a1F79d58c25aE85D43f5"
+    "pepeFeed": "0xf2896b87a53A244207092E6d51eA2b00131e6218"
   }
 }

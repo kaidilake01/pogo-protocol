@@ -3,7 +3,7 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 const root=process.cwd();
 const rules=JSON.parse(fs.readFileSync('docs/current-rules.json','utf8'));
-assert.deepEqual(rules.rewardSplitBps,[625,3125,6250]);
+assert.deepEqual(rules.rewardSplitBps,[400,1600,8000]);
 assert.equal(rules.activeDays,90);
 assert.equal(rules.lockHours,24);
 assert.equal(rules.earlyExitBps,1000);

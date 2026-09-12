@@ -37,20 +37,20 @@ contract FixedAllocationMiningTest is TestBase {
     function testRoundingAndAllocationMetadata() public {
         FixedAllocationFundingMock other=new FixedAllocationFundingMock();other.initialize();other.start(101);
         FixedAllocationMining miner=other.mining();
-        assertEq(miner.VERSION(),13);assertEq(miner.poolState(0).budget,6);assertEq(miner.poolState(1).budget,31);assertEq(miner.poolState(2).budget,64);
-        assertEq(miner.rewardAllocationBps(0),625);assertEq(miner.rewardAllocationBps(1),3125);assertEq(miner.rewardAllocationBps(2),6250);
+        assertEq(miner.VERSION(),14);assertEq(miner.poolState(0).budget,4);assertEq(miner.poolState(1).budget,16);assertEq(miner.poolState(2).budget,81);
+        assertEq(miner.rewardAllocationBps(0),400);assertEq(miner.rewardAllocationBps(1),1600);assertEq(miner.rewardAllocationBps(2),8000);
     }
     function testUnequalStakeDoesNotReallocateBudgets() public {
         vm.prank(A);m.stake(100 ether,false);vm.prank(A);m.stake(500 ether,true);vm.prank(A);m.stakeLP(2000 ether);
         advance(1 days);
-        assertEq(m.earnedIn(0,A),125_000 ether);assertEq(m.earnedIn(1,A),625_000 ether);assertEq(m.earnedIn(2,A),1_250_000 ether);
+        assertEq(m.earnedIn(0,A),80_000 ether);assertEq(m.earnedIn(1,A),320_000 ether);assertEq(m.earnedIn(2,A),1_600_000 ether);
         vm.prank(B);m.stake(900 ether,false);advance(1 days);
-        assertEq(m.earnedIn(0,B),112_500 ether);assertEq(m.earnedIn(1,A),1_250_000 ether);assertEq(m.earnedIn(2,A),2_500_000 ether);
+        assertEq(m.earnedIn(0,B),72_000 ether);assertEq(m.earnedIn(1,A),640_000 ether);assertEq(m.earnedIn(2,A),3_200_000 ether);
     }
     function testSplitAndDayEmissionsNoCrossPoolWeights() public {
-        assertEq(m.poolState(0).budget,11_250_000 ether);assertEq(m.poolState(1).budget,56_250_000 ether);assertEq(m.poolState(2).budget,112_500_000 ether);
+        assertEq(m.poolState(0).budget,7_200_000 ether);assertEq(m.poolState(1).budget,28_800_000 ether);assertEq(m.poolState(2).budget,144_000_000 ether);
         allStake(A,100 ether);advance(1 days);
-        assertEq(m.earnedIn(0,A),125_000 ether);assertEq(m.earnedIn(1,A),625_000 ether);assertEq(m.earnedIn(2,A),1_250_000 ether);
+        assertEq(m.earnedIn(0,A),80_000 ether);assertEq(m.earnedIn(1,A),320_000 ether);assertEq(m.earnedIn(2,A),1_600_000 ether);
         assertEq(m.balanceOf(A),200 ether);assertEq(t.balanceOf(address(m)),200 ether);assertEq(lp.balanceOf(address(m)),100 ether);
         uint256 before_=t.balanceOf(A);m.claimFor(A);assertEq(t.balanceOf(A)-before_,2_000_000 ether);
         assertEq(m.claimedRewards(),2_000_000 ether);assertEq(m.participantCount(),1);
@@ -62,9 +62,9 @@ contract FixedAllocationMiningTest is TestBase {
         vm.prank(A);m.withdrawFlexible(100 ether);advance(100 days);
         vm.prank(B);m.stake(100 ether,false);vm.prank(B);m.stakeLP(100 ether);
         assertEq(m.earned(B),0);advance(80 days);m.claimFor(B);
-        assertEq(m.poolState(0).claimed,11_250_000 ether);assertEq(m.poolState(2).activeSeconds,80 days);
+        assertEq(m.poolState(0).claimed,7_200_000 ether);assertEq(m.poolState(2).activeSeconds,80 days);
         assertEq(m.poolState(1).scheduled,0);assertEq(m.poolEndsAt(1),0);
-        advance(10 days);m.claimFor(B);assertEq(m.poolState(2).claimed,112_500_000 ether);
+        advance(10 days);m.claimFor(B);assertEq(m.poolState(2).claimed,144_000_000 ether);
         vm.expectRevert(FixedAllocationMining.Inactive.selector);vm.prank(B);m.stakeLP(1);
         vm.prank(B);m.withdrawLP(0,100 ether);vm.prank(B);m.withdrawFlexible(100 ether);
         vm.prank(A);m.stake(100 ether,true);assertEq(m.earnedIn(1,A),0);
@@ -73,8 +73,8 @@ contract FixedAllocationMiningTest is TestBase {
     }
     function testDilutionOnlyAffectsFutureEarnings() public {
         vm.prank(A);m.stakeLP(100 ether);advance(1 days);
-        vm.prank(B);m.stakeLP(300 ether);assertEq(m.earnedIn(2,A),1_250_000 ether);assertEq(m.earnedIn(2,B),0);
-        advance(1 days);assertEq(m.earnedIn(2,A),1_562_500 ether);assertEq(m.earnedIn(2,B),937_500 ether);
+        vm.prank(B);m.stakeLP(300 ether);assertEq(m.earnedIn(2,A),1_600_000 ether);assertEq(m.earnedIn(2,B),0);
+        advance(1 days);assertEq(m.earnedIn(2,A),2_000_000 ether);assertEq(m.earnedIn(2,B),1_200_000 ether);
     }
     function testTwentyFourHourIndependentLocksAndPartialExits() public {
         uint256 start=m.startedAt();vm.prank(A);m.stake(500 ether,true);vm.warp(start+12 hours);vm.prank(A);m.stake(200 ether,true);

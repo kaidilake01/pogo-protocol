@@ -55,7 +55,7 @@ contract FixedAllocationForkTest is TestBase {
    }else token=f.createTokenWithTemplateV8(p,252);
    uint256 creationGas=beforeGas-gasleft();assertTrue(creationGas*130/100+100000<16_777_216);
    (,address pool,address vault,)=f.projects(token);ReflowCurve c=ReflowCurve(pool);FixedAllocationMining m=FixedAllocationMining(c.stakingPool());
-   assertEq(c.VERSION(),11);assertEq(m.VERSION(),13);assertEq(m.penaltyRecipient(),address(0xdead));
+   assertEq(c.VERSION(),11);assertEq(m.VERSION(),14);assertEq(m.penaltyRecipient(),address(0xdead));
    if(asset==address(0)){assertEq(c.graduationTarget(),.01 ether);c.buy{value:.02 ether}(.02 ether,1,block.timestamp,address(this));}
    else{
     BNBQuoteAdapter(f.bnbAdapter()).convertBNB{value:.03 ether}(asset,1,block.timestamp,address(this),route(asset));

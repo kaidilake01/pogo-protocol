@@ -15,7 +15,9 @@
     "contracts/src/BNBTradeRouter.sol",
     "tests/contracts/QuoteRevenue.t.sol",
     "tests/contracts/FixedAllocationMining.t.sol",
-    "tests/contracts/FixedAllocationFork.t.sol"
+    "tests/contracts/FixedAllocationFork.t.sol",
+    "contracts/src/PancakeTwapQuoteFeed.sol",
+    "tests/contracts/PancakeTwapFeed.t.sol"
   ],
   "files": {
     "contracts/internal/BondingCurve.sol": "f21255136c5a43b16cb69b58937fc608a8fa5ba8deb9387393719e9c299524a4",
@@ -55,7 +57,7 @@
     "contracts/src/BNBTradeRouter.sol": "61c1cfd2e51352225cb883497d3c85a39f630452b951b7d328a3a8be07a0f5d7",
     "contracts/src/LaunchFactory.sol": "001d56fe61e243b1bc87499f8ef5a0fff72298665d938a3de63ffacc4d4d3282",
     "contracts/src/LaunchToken.sol": "d3aad2af289dd2eb75c912bd5194a63fb4fdb818c40a9faf37cf7b53fde17abd",
-    "contracts/src/Mining.sol": "b5ea6c11b69c6e69b4ce299039543cc4631fc0ec4a0c9ed358b64093172226f7",
+    "contracts/src/Mining.sol": "709483f758f199cc2584f36e11f740615d852d2a4571d74007b86f9ea811c6ac",
     "contracts/src/MiningCurve.sol": "93673374682aca4e8e076dfa30d38cfd290d2727ac8c2725fd2e9a0b55504ad3",
     "contracts/src/MiningCurveDeployer.sol": "26b4b8e81e667919e329701947c71cbb05428c2f1380d50631e55b2f46773cdd",
     "contracts/src/QuoteAssetRegistry.sol": "33e13b7abe5f2c32b7cceaaa571e59933c30f5d4548d248e4ce7ce944e66ba98",
@@ -63,8 +65,8 @@
     "contracts/src/TokenDeployer.sol": "e427f43d5e01192bfdc3f639a1d46908b32bbf8ceb148e075392e769c4de45a2",
     "contracts/src/TransferCurve.sol": "bb0ec5428b7aef8e5acf032615e4d59b0cf0173f188b594710366e565d97da6a",
     "contracts/src/TransferCurveDeployer.sol": "ccae6c250eb1bae57c8d8fc1d71a690317dac16dabfe8422407e5ee645821a94",
-    "tests/contracts/FixedAllocationFork.t.sol": "c943bf005c8998fc92b36c7b241a59cbd6649290cd912eecec2c4a3575bce1a4",
-    "tests/contracts/FixedAllocationMining.t.sol": "670ec67bcca5187490b37c30043826172a646428ec8eb865d0e029bf1c1eb794",
+    "tests/contracts/FixedAllocationFork.t.sol": "78e9d3fedb99db50826a637142ec4ff5ca9fafa1f2a1dfc52228cb81524d37ec",
+    "tests/contracts/FixedAllocationMining.t.sol": "5c4ede8d1307b73c5223570c9b0346d031c250f42c0635a06a6c3b9e8153b1d9",
     "tests/contracts/GraduationTarget.t.sol": "3160e7aa2ccd1b2cdffb8ac4abfe451d9751629f5c4a8997db0cd814a445f4f7",
     "tests/contracts/LaunchTemplates.t.sol": "9d0b264110533320fd1736605b6847936e7e88360bf268ccc23c7bb8856fe95d",
     "tests/contracts/LaunchV3.t.sol": "0d875fa6f4de1493b54d861e91631b1f8cfb272ef7539c265f5611ba764b6ab2",
@@ -73,6 +75,9 @@
     "tests/contracts/QuoteAssets.t.sol": "76ac7188588411bd49b88734494c3e9857098c0a8741d9848e91138f96a8fac5",
     "tests/contracts/QuoteRevenue.t.sol": "88f0726386cbf3348f88fb3967c4768240ed98f57c0c4b7484904a6843bd6835",
     "tests/contracts/StandardCurve.t.sol": "212eae25312d6935da1f7bb282e272414898e2e337e4305980d1f446e7f920d9",
-    "tests/contracts/TestBase.sol": "8a6c0a6e2d789fddd4b885dccd33055e2c9b49a7fc9a805ada89eea3ba9ff82d"
+    "tests/contracts/TestBase.sol": "8a6c0a6e2d789fddd4b885dccd33055e2c9b49a7fc9a805ada89eea3ba9ff82d",
+    "contracts/src/PancakeTwapQuoteFeed.sol": "3ac57835798499a307c51e3380e76b2bb977fdcba8c9d0431ce4f143d00d6ece",
+    "contracts/internal/PancakeTickMath.sol": "bf52675c98003d4b1a871387602a90bdbcb1709e65727714fa8be7528eae9520",
+    "tests/contracts/PancakeTwapFeed.t.sol": "7e4203fca757164f1912ce09c8be54cbf04252fef66a67389f3f614c6f81f264"
   }
 }

@@ -22,7 +22,7 @@ interface IFixedAllocationPair is IERC20 {
 /// No owner, upgrades, minting, recovery, or admission of non-canonical LP assets.
 contract FixedAllocationMining is ReentrancyGuard {
     using SafeERC20 for IERC20;
-    uint256 public constant VERSION = 13;
+    uint256 public constant VERSION = 14;
     uint256 public constant DURATION = 90 days;
     uint256 public constant LOCK_DURATION = 24 hours;
     uint256 public constant EARLY_EXIT_BPS = 1000;
@@ -69,15 +69,15 @@ contract FixedAllocationMining is ReentrancyGuard {
             ||IFixedAllocationFunding(fundingPool).pair()!=pair_)revert InvalidConfig();
         if(IFixedAllocationPair(pair_).token0()!=address(token)&&IFixedAllocationPair(pair_).token1()!=address(token))revert InvalidConfig();
         lpToken=pair_;rewardBudget=budget;startedAt=block.timestamp;
-        // Fixed budget ratio 1:5:10; LP receives rounding dust to conserve the total.
-        pools[0].budget=budget/16;pools[1].budget=Math.mulDiv(budget,5,16);
+        // Fixed budget ratio 1:4:20; LP receives rounding dust to conserve the total.
+        pools[0].budget=budget/25;pools[1].budget=Math.mulDiv(budget,4,25);
         pools[2].budget=budget-pools[0].budget-pools[1].budget;
         for(uint8 i;i<3;i++)pools[i].checkpointAt=block.timestamp;
         emit MiningActivated(budget,pair_,DURATION);
     }
     /// @notice Basis points of the total mining budget, not APR or stake weights.
     function rewardAllocationBps(uint8 id) external pure returns(uint256) {
-        _check(id);return id==0?625:id==1?3125:6250;
+        _check(id);return id==0?400:id==1?1600:8000;
     }
     function _check(uint8 id) private pure { if(id>2)revert InvalidConfig(); }
     function balanceOf(address account) external view returns(uint256) { return stakeOf[0][account]+stakeOf[1][account]; }

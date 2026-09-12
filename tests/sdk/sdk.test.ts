@@ -45,7 +45,7 @@ test("create calldata preserves tax and target bounds and pays only the creation
   assert.equal(tx.value, parseEther(".01"));
   assert.equal(decoded.functionName, "createTokenWithTemplateV8");
   assert.deepEqual(decoded.args?.[0], p);
-  assert.equal(decoded.args?.[1],11n);
+  assert.equal(decoded.args?.[1],12n);
 });
 test("tax validation rejects excess total, negative allocations and excessive buy tax", () => {
   assert.throws(() => validateTax({ ...tax, recipientBps: 9000 }));
