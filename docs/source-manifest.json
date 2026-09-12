@@ -74,7 +74,7 @@
     "tests/contracts/StandardCurve.t.sol": "6ca607f1fa3e2a91a0fafbc89d67a9148507287d20385a05b7cdf8556c87f13f",
     "tests/contracts/TestBase.sol": "8a6c0a6e2d789fddd4b885dccd33055e2c9b49a7fc9a805ada89eea3ba9ff82d",
     "contracts/src/v13/FixedAllocationMining.sol": "b5ea6c11b69c6e69b4ce299039543cc4631fc0ec4a0c9ed358b64093172226f7",
-    "tests/contracts/FixedAllocationMining.t.sol": "d0fdeebc37279c3149b4a00e9763b2759d51c4c82b1f9397e320b7cd535defde",
+    "tests/contracts/FixedAllocationMining.t.sol": "2846befe79ea31db3e2d64555ca7ea03aa9bdef731507b0e1bb09408ea3dcc93",
     "tests/contracts/FixedAllocationFork.t.sol": "4b7ecf7e0836541eacc354e5fb7ff9b7960a49f42813052dd6330bed29e9b6b7"
   }
 }

@@ -138,4 +138,3 @@ contract FixedAllocationMiningTest is TestBase {
         assertEq(t.balanceOf(address(m)),0);assertEq(lp.balanceOf(address(m)),0);
     }
 }
-
