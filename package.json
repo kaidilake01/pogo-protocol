@@ -12,7 +12,7 @@
   },
   "scripts": {
     "build": "npm run build --workspace=pogo-protocol-sdk",
-    "test": "tsx --test tests/sdk/*.test.ts",
+    "test": "tsx --test tests/sdk/*.test.ts tests/scripts/*.test.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test:contracts": "forge test",
     "build:contracts": "forge build",

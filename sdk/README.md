@@ -27,7 +27,7 @@ console.log(configuration.quote.target);
 | `buildBNBBuy` | Unsigned BNB-routed buy for a non-native quote market |
 | `buildGraduation` | Unsigned permissionless graduation call |
 | `previewInitialBuy` | Fresh-curve integer preview; explicitly pass the curve version |
-| `factoryAbi`, `curveAbi`, `tokenAbi`, `vaultAbi`, `registryAbi`, `bnbRouterAbi`, `adapterAbi` | Contract interfaces, including events and errors |
+| `factoryAbi`, `curveAbi`, `tokenAbi`, `vaultAbi`, `transferVaultAbi`, `registryAbi`, `bnbRouterAbi`, `adapterAbi` | Contract interfaces, including events and errors |
 
 Amounts are `bigint` in raw token units. Deadlines are Unix seconds. Builders never estimate gas, approve assets, sign, broadcast, or ensure a route is currently liquid. Validate and simulate against fresh on-chain state. `previewInitialBuy` defaults to the curve version in the current mainnet snapshot. Pass `Number(configuration.curveVersion)` when quoting a specific existing project.
 
@@ -35,4 +35,4 @@ The package includes a dated public deployment snapshot. Resolve mutable configu
 
 ## Current templates
 
-Default template ID is 11 (DeFi); ID 10 is CZ transfer. `launchConfiguration(quoteAsset, templateId)` reads the matching hash. Pass the same ID as the fourth argument of `buildCreateTransaction` or the fifth argument of `buildCreateAndBuyTransaction` after the factory address. Vault and mining ABIs are exported as `vaultAbi` and `miningAbi`. Historical project rewards must use that project’s original ABI and asset.
+Default template ID is 13 (DeFi); ID 10 is CZ transfer. `launchConfiguration(quoteAsset, templateId)` reads the matching hash. Pass the same ID as the fourth argument of `buildCreateTransaction` or the fifth argument of `buildCreateAndBuyTransaction` after the factory address. The default curve ABI is version 15. Vault and mining ABIs are exported as `vaultAbi` and `miningAbi`; `transferVaultAbi` exposes the CZ-transfer vault. A DeFi curve reports `stakingPool() = 0x0000000000000000000000000000000000000000` before graduation. Discover its mining contract from `MiningFunded` or re-read the address after graduation; mining version 14 and its 4% / 16% / 80% budgets are unchanged. Historical project rewards must use that project’s original ABI and asset.

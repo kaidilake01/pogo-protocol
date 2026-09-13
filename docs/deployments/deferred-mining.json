@@ -1,0 +1,74 @@
+{
+  "factory": "0x0abc6174ee9f9600243D14F83E215993b8BbABEb",
+  "owner": "0x5E807ae9C82bA691Fca0CC1f56EB01eb58d6f04C",
+  "registry": "0xe15f2884d6c36bee3aafc38859f1f2f54046a730",
+  "previousRegistry": "0xe15f2884d6c36bee3aafc38859f1f2f54046a730",
+  "implementation": "0xc8C820a3DEc5666E9a4B02275E293a6f15f4b813",
+  "fairCurveDeployer": "0x5D7B1415888d64b5023Fa0ad16C7016aC98a39A5",
+  "miningCurveDeployer": "0xE9f92174Fb1166B0b7efEF8e5fa873340df31cBD",
+  "vaultDeployer": "0x0A37ab575137245fCd390BE9dc6e9898E08B1075",
+  "miningDeployer": "0x066997F23fc2ba8006D340c75925582B7f253e62",
+  "creationFeeWei": "0",
+  "targetBNB": "6.666",
+  "targetWei": "6666000000000000000",
+  "virtualQuote": "6164383561643835617",
+  "legacyStatePreserved": true,
+  "factoryImplementationUnchanged": true,
+  "enabledTemplateIds": [
+    13,
+    10
+  ],
+  "miningVersion": 14,
+  "curveVersion": 15,
+  "deferredMining": true,
+  "dividendAssetVersion": 1,
+  "rewardSplitBps": [
+    400,
+    1600,
+    8000
+  ],
+  "activeDurationDays": 90,
+  "lockHours": 24,
+  "earlyExitBps": 1000,
+  "penaltyRecipient": "0x000000000000000000000000000000000000dEaD",
+  "lpVersion": 2,
+  "verificationEntries": [
+    {
+      "address": "0x0A37ab575137245fCd390BE9dc6e9898E08B1075",
+      "constructorArguments": "0x0000000000000000000000000abc6174ee9f9600243d14f83e215993b8bbabeb"
+    },
+    {
+      "address": "0xE9f92174Fb1166B0b7efEF8e5fa873340df31cBD",
+      "constructorArguments": "0x0000000000000000000000000abc6174ee9f9600243d14f83e215993b8bbabeb000000000000000000000000066997f23fc2ba8006d340c75925582b7f253e62"
+    }
+  ],
+  "transactions": [
+    {
+      "name": "DeferredMiningVaultDeployer",
+      "hash": "0xae7cc1f5d5f3c1e0b57d0fd54fa6b2541cfa041bb61bb5b443d6aa8e5ec0094c",
+      "address": "0x0A37ab575137245fCd390BE9dc6e9898E08B1075",
+      "cost": "188982300000000",
+      "block": 121618574
+    },
+    {
+      "name": "DeferredMiningCurveDeployer",
+      "hash": "0x90cfd42b1d0ed9517ed8d08955383283be1c4e674c7d5dac4fefdb6089132161",
+      "address": "0xE9f92174Fb1166B0b7efEF8e5fa873340df31cBD",
+      "cost": "128926550000000",
+      "block": 121618584
+    },
+    {
+      "name": "register-template-13",
+      "hash": "0x071ee439bc9fec0af7de0b92117f1ffdb86b03a4252cdb2980e7faa207ec3f82",
+      "cost": "5668800000000",
+      "block": 121618594
+    },
+    {
+      "name": "retire-old-template-12",
+      "hash": "0x9276f142f36e4afeb230b55ffbb4ff384d55b51bae7a34db89228df5170c7dcc",
+      "cost": "1897800000000",
+      "block": 121618601
+    }
+  ],
+  "totalGasBNB": "0.00032547545"
+}

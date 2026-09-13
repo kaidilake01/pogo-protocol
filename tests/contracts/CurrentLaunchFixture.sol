@@ -21,9 +21,10 @@ import {BNBQuoteAdapter} from "../../contracts/src/BNBQuoteAdapter.sol";
 import {StandaloneVaultDeployer} from "../../contracts/internal/StandaloneVaultDeployer.sol";
 import {StandardLaunchToken} from "../../contracts/src/LaunchToken.sol";
 import {StandardTokenDeployer} from "../../contracts/src/TokenDeployer.sol";
-import {ReflowCurveDeployer} from "../../contracts/src/MiningCurveDeployer.sol";
+import {DeferredMiningCurveDeployer} from "../../contracts/src/MiningCurveDeployer.sol";
 import {FixedAllocationMiningDeployer} from "../../contracts/src/Mining.sol";
 import {QuoteVaultDeployer} from "../../contracts/src/RevenueVault.sol";
+import {DeferredMiningVaultDeployer} from "../../contracts/src/MiningRevenueVault.sol";
 import {DirectedLaunchCurveDeployer} from "../../contracts/src/TransferCurveDeployer.sol";
 import {QuoteAssetRegistryV7} from "../../contracts/src/QuoteAssetRegistry.sol";
 import {LaunchFactoryV8} from "../../contracts/src/LaunchFactory.sol";
@@ -59,12 +60,12 @@ abstract contract CurrentLaunchFixture is TestBase {
         registry.configure(address(quote),QuoteAssetRegistry.Asset(address(stock),0,3600,18,8,0,true));
         f.setTemplatesV3(address(registry),address(new LaunchTokenV3()),address(new RevenueVault()),address(new MultiAssetCurve()));
         f.setBNBAdapter(address(new BNBQuoteAdapter(address(wrapped),address(router),address(router))));
-        ReflowCurveDeployer curve=new ReflowCurveDeployer(address(f),address(new FixedAllocationMiningDeployer()));
-        QuoteVaultDeployer vault=new QuoteVaultDeployer(address(f));
+        DeferredMiningCurveDeployer curve=new DeferredMiningCurveDeployer(address(f),address(new FixedAllocationMiningDeployer()));
+        DeferredMiningVaultDeployer vault=new DeferredMiningVaultDeployer(address(f));
         f.setStandaloneDeployers(address(new StandardTokenDeployer(address(f))),address(curve),address(vault));
         f.configureMiningLaunches(address(new QuoteAssetRegistryV7(address(registry),6.666 ether)),address(curve),address(vault));
-        f.registerLaunchTemplate(12,address(curve),address(vault),1);
-        f.registerLaunchTemplate(10,address(new DirectedLaunchCurveDeployer(address(f))),address(vault),0);
+        f.registerLaunchTemplate(13,address(curve),address(vault),1);
+        f.registerLaunchTemplate(10,address(new DirectedLaunchCurveDeployer(address(f))),address(new QuoteVaultDeployer(address(f))),0);
     }
     function params(address asset,bool taxed) internal view returns(LaunchFactoryV3.CreateParamsV3 memory p){
         p.name="Standard";p.symbol="STD";p.metadataURI="ipfs://test";p.quoteAsset=asset;

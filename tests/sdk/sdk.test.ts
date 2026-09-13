@@ -45,7 +45,7 @@ test("create calldata preserves tax and target bounds and pays only the creation
   assert.equal(tx.value, parseEther(".01"));
   assert.equal(decoded.functionName, "createTokenWithTemplateV8");
   assert.deepEqual(decoded.args?.[0], p);
-  assert.equal(decoded.args?.[1],12n);
+  assert.equal(decoded.args?.[1],13n);
 });
 test("tax validation rejects excess total, negative allocations and excessive buy tax", () => {
   assert.throws(() => validateTax({ ...tax, recipientBps: 9000 }));
@@ -70,6 +70,12 @@ test("native first buy is added to the creation fee, ERC20 first buy is not", ()
     buildCreateAndBuyTransaction(p, b, parseEther(".01")).value,
     parseEther(".11"),
   );
+  const native = decodeFunctionData({ abi: factoryAbi, data: buildCreateAndBuyTransaction(p, b, 0n).data });
+  assert.equal(native.functionName, "createTokenAndBuyWithTemplateV8");
+  assert.equal(native.args?.[2], 13n);
+  assert.deepEqual(native.args?.[1], b);
+  const transfer = decodeFunctionData({ abi: factoryAbi, data: buildCreateAndBuyTransaction(p, b, 0n, undefined, 10n).data });
+  assert.equal(transfer.args?.[2], 10n);
   assert.equal(
     buildCreateAndBuyTransaction(
       { ...p, quoteAsset: creator },
@@ -139,7 +145,7 @@ test("standard initial price and graduation cap match the documented curve", () 
 test("initial-buy default follows the current 6.666 BNB curve", () => {
  const target=parseEther("6.666"), opening=(parseEther("18")*25n+72n)/73n;
  const current=previewInitialBuy(parseEther("8"),target,opening,0);
- assert.deepEqual(current,previewInitialBuy(parseEther("8"),target,opening,0,11));
+ assert.deepEqual(current,previewInitialBuy(parseEther("8"),target,opening,0,15));
  assert.equal(current.used-current.platform-current.tax,target);
  assert.equal(current.tokens,557980307873647527569535079n);
 });

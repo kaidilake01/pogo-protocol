@@ -4,7 +4,7 @@ pragma solidity 0.8.28;
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {Math} from "@openzeppelin/contracts/utils/math/Math.sol";
-import {ReflowMining, ReflowMiningDeployer} from "../internal/ReflowMining.sol";
+import {FixedAllocationMining, FixedAllocationMiningDeployer} from "./Mining.sol";
 import {MiningRevenueVault} from "../internal/MiningRevenueVault.sol";
 import {QuoteAssetRegistry} from "../internal/QuoteAssetRegistry.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
@@ -13,11 +13,11 @@ import {ILaunchTokenV3, IRevenueVaultV3} from "../internal/LaunchTypes.sol";
 
 /// @notice Quotes, collateral, taxes and graduation all use the same immutable asset.
 /// Preserves the original initial virtual reserves, with an independent early graduation target.
-interface IMiningFactoryConfig { function quoteRegistry() external view returns(address); }
-interface IPairCodeHash { function INIT_CODE_PAIR_HASH() external view returns(bytes32); }
-contract ReflowCurve is ReentrancyGuard {
+interface IDeferredMiningFactoryConfig { function quoteRegistry() external view returns(address); }
+interface IDeferredPairCodeHash { function INIT_CODE_PAIR_HASH() external view returns(bytes32); }
+contract DeferredMiningCurve is ReentrancyGuard {
     using SafeERC20 for IERC20;
-    uint256 public constant VERSION = 11;
+    uint256 public constant VERSION = 15;
     uint256 public constant PLATFORM_BPS = 100;
     uint256 public constant INITIAL_SUPPLY = 1_000_000_000 ether;
     uint256 public constant INITIAL_VIRTUAL_TOKENS = (uint256(800_000_000 ether) * 98 + 72) / 73;
@@ -82,13 +82,12 @@ contract ReflowCurve is ReentrancyGuard {
         virtualTokenOffset=INITIAL_VIRTUAL_TOKENS-INITIAL_SUPPLY;
         saleTarget=Math.mulDiv(INITIAL_VIRTUAL_TOKENS,p.graduationTarget,p.virtualQuote+p.graduationTarget);
         if(saleTarget==0||saleTarget>=INITIAL_SUPPLY)revert InvalidConfig();
-        pricingRegistry=IMiningFactoryConfig(launchFactory).quoteRegistry();
-        stakingPool=ReflowMiningDeployer(miningDeployer).deploy(p.token,p.vault);
-        MiningRevenueVault(payable(p.vault)).setStakingPool(stakingPool);
+        pricingRegistry=IDeferredMiningFactoryConfig(launchFactory).quoteRegistry();
+        // Mining cannot start before graduation. Deploy its standalone contract then.
         address settled=p.quoteAsset==address(0)?IV2Router(p.router).WETH():p.quoteAsset;
         address factory=IV2Router(p.router).factory();
         (address a,address b)=p.token<settled?(p.token,settled):(settled,p.token);
-        bytes32 codeHash=IPairCodeHash(factory).INIT_CODE_PAIR_HASH();
+        bytes32 codeHash=IDeferredPairCodeHash(factory).INIT_CODE_PAIR_HASH();
         if(codeHash==bytes32(0))revert InvalidConfig();
         address futurePair=address(uint160(uint256(keccak256(abi.encodePacked(bytes1(0xff),factory,keccak256(abi.encodePacked(a,b)),codeHash)))));
         address existing=IV2Factory(factory).getPair(p.token,settled);
@@ -197,7 +196,9 @@ contract ReflowCurve is ReentrancyGuard {
         if(quoteAsset==address(0)) IWBNB(settled).deposit{value:quote}();
         IERC20(settled).safeTransfer(p,quote);
         uint256 lp=IV2Pair(p).mint(address(0xdead));
-        ReflowMining(stakingPool).activate(surplus,p);
+        stakingPool=FixedAllocationMiningDeployer(miningDeployer).deploy(token,vault);
+        MiningRevenueVault(payable(vault)).setStakingPool(stakingPool);
+        FixedAllocationMining(stakingPool).activate(surplus,p);
         emit GraduationV3(token,p,quoteAsset,quote,seed,lp,0);
         emit MiningFunded(stakingPool,surplus);
     }

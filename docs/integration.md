@@ -18,8 +18,14 @@ For internal routed sells, approve the pool as required by `sellFor`; for extern
 
 ## Compatibility
 
-`projectVersion(token)` remains 3 for the multi-asset factory ABI family, while `pool.VERSION()` is 11 for DeFi and 9 for CZ transfer. These are different version axes. Do not infer economics from the project ABI version alone. Required compatibility types live in `contracts/internal/`. Select new launches through the current registered templates.
+`projectVersion(token)` remains 3 for the multi-asset factory ABI family, while `pool.VERSION()` is 15 for DeFi and 9 for CZ transfer. These are different version axes. Do not infer economics from the project ABI version alone. Required compatibility types live in `contracts/internal/`. Select new launches through the current registered templates.
 
 ## Template selection
 
-The launch readers and unsigned creation builders default to template 12. Pass template 10 for CZ transfer. Creation builders accept `templateId` after the optional factory address. They encode `createTokenWithTemplateV8` or `createTokenAndBuyWithTemplateV8`, and the launch config hash must come from the same template. The current public ABI includes `QuoteRevenueVault` and `FixedAllocationMining`. Do not use project TOKEN as the dividend asset in a quote-only vault.
+The launch readers and unsigned creation builders default to template 13. Pass template 10 for CZ transfer. Creation builders accept `templateId` after the optional factory address. They encode `createTokenWithTemplateV8` or `createTokenAndBuyWithTemplateV8`, and the launch config hash must come from the same template. The current `vaultAbi` represents `DeferredMiningRevenueVault`; `transferVaultAbi` represents the CZ-transfer `QuoteRevenueVault`, and `miningAbi` represents `FixedAllocationMining`. Do not use project TOKEN as the dividend asset in a quote-only vault.
+
+## Deferred mining and wallet providers
+
+For a version-15 DeFi curve, `stakingPool()` is zero before graduation. Re-read it after a confirmed `GraduationV3` / `MiningFunded` transaction and then read `FixedAllocationMining.VERSION()` and its budgets. Do not cache the zero address permanently or infer a pool address from another project.
+
+Use the selected extension’s EIP-6963/EIP-1193 provider consistently for account checks, chain switching and transaction requests. Do not replace it with whichever wallet last wrote `window.ethereum`. Simulate the exact creation calldata and native value, estimate its gas, and respect the chain’s transaction gas cap. A returned wallet hash alone is not confirmation: verify the successful receipt, factory creation event and first-buy transfer to the intended buyer. Automated contract and provider tests do not establish that every wallet product or release has been tested.

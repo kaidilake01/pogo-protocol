@@ -155,7 +155,7 @@ export const curveAbi = [
       {
         "name": "p",
         "type": "tuple",
-        "internalType": "struct ReflowCurve.Init",
+        "internalType": "struct DeferredMiningCurve.Init",
         "components": [
           {
             "name": "token",
@@ -321,7 +321,7 @@ export const curveAbi = [
       {
         "name": "q",
         "type": "tuple",
-        "internalType": "struct ReflowCurve.BuyQuote",
+        "internalType": "struct DeferredMiningCurve.BuyQuote",
         "components": [
           {
             "name": "tokens",

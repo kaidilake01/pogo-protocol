@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "algorithm": "sha256",
+  "release": "docs/deployments/deferred-mining.json",
+  "provenance": "Compiler output used for the mainnet v15 deployment verification bundles. Source paths are reorganized in this repository; executable bytes must match after masking compiler-declared immutables and only the metadata IPFS digest of embedded child contracts. The outer Solidity metadata footer is excluded.",
+  "compiler": "0.8.28+commit.7893614a",
+  "settings": {
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "evmVersion": "paris",
+    "viaIR": true,
+    "libraries": {}
+  },
+  "contracts": [
+    {
+      "name": "DeferredMiningCurve",
+      "artifact": "out/MiningCurve.sol/DeferredMiningCurve.json",
+      "source": {
+        "contracts/src/MiningCurve.sol": "DeferredMiningCurve"
+      },
+      "runtimeBytes": 10837,
+      "immutableRanges": [
+        {
+          "start": 1798,
+          "length": 32
+        },
+        {
+          "start": 3137,
+          "length": 32
+        },
+        {
+          "start": 3496,
+          "length": 32
+        }
+      ],
+      "embeddedMetadata": [],
+      "normalizedExecutableSha256": "c2d48a5ea2ab78b397c837521c32b3ee591a7a949ec55bb1f210831def80f989"
+    },
+    {
+      "name": "DeferredMiningCurveDeployer",
+      "artifact": "out/MiningCurveDeployer.sol/DeferredMiningCurveDeployer.json",
+      "source": {
+        "contracts/src/MiningCurveDeployer.sol": "DeferredMiningCurveDeployer"
+      },
+      "runtimeBytes": 11654,
+      "immutableRanges": [
+        {
+          "start": 141,
+          "length": 32
+        },
+        {
+          "start": 210,
+          "length": 32
+        },
+        {
+          "start": 304,
+          "length": 32
+        },
+        {
+          "start": 391,
+          "length": 32
+        }
+      ],
+      "embeddedMetadata": [
+        {
+          "start": 11548,
+          "length": 53,
+          "contract": "DeferredMiningCurve"
+        }
+      ],
+      "normalizedExecutableSha256": "af950db5ad08e1f93ef3a05ff73b88700854f8185573b91da125ed9240f8dc2f"
+    },
+    {
+      "name": "DeferredMiningRevenueVault",
+      "artifact": "out/MiningRevenueVault.sol/DeferredMiningRevenueVault.json",
+      "source": {
+        "contracts/src/MiningRevenueVault.sol": "DeferredMiningRevenueVault"
+      },
+      "runtimeBytes": 16590,
+      "immutableRanges": [
+        {
+          "start": 4097,
+          "length": 32
+        }
+      ],
+      "embeddedMetadata": [],
+      "normalizedExecutableSha256": "b681615fa8b7172baac3a6e66a470a9e548fd8702c6213b5ae40cac2abd7691f"
+    },
+    {
+      "name": "DeferredMiningVaultDeployer",
+      "artifact": "out/MiningRevenueVault.sol/DeferredMiningVaultDeployer.json",
+      "source": {
+        "contracts/src/MiningRevenueVault.sol": "DeferredMiningVaultDeployer"
+      },
+      "runtimeBytes": 17225,
+      "immutableRanges": [
+        {
+          "start": 130,
+          "length": 32
+        },
+        {
+          "start": 224,
+          "length": 32
+        }
+      ],
+      "embeddedMetadata": [
+        {
+          "start": 17119,
+          "length": 53,
+          "contract": "DeferredMiningRevenueVault"
+        }
+      ],
+      "normalizedExecutableSha256": "d688da7fb02cea38d5e6040593f6b001dda102cddf7f1e914a812613d62abc21"
+    }
+  ]
+}

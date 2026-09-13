@@ -31,13 +31,15 @@ Virtual reserves determine the curve price and cannot be withdrawn. Actual recei
 
 ## DeFi mining
 
+The DeFi mining contract is deployed during graduation, not when the token is created. That transaction binds the canonical V2 LP pair and fixes the actual leftover reward budget. Before graduation, no mining pool exists and no mining rewards accrue. This timing does not change the curve pricing or the allocation below.
+
 | Pool | Share of actual reward budget | Principal lock |
 | --- | --- | --- |
 | Flexible single token | 4% | None |
 | Locked single token | 16% | 24 hours per deposit |
 | Canonical V2 LP | 80% | 24 hours per deposit |
 
-Template 12 fixes total mining rewards at 1:4:20 across these pools. Pool allocation does not change with participant counts or stake values. Inside each pool, participants earn in proportion to their stake; allocation ratios do not guarantee corresponding APR multiples. Old token pools retain their deployment-time budgets. Integer rounding dust remains in the LP budget so the three budgets sum to the total.
+Template 13 fixes total mining rewards at 1:4:20 across these pools. Pool allocation does not change with participant counts or stake values. Inside each pool, participants earn in proportion to their stake; allocation ratios do not guarantee corresponding APR multiples. Old token pools retain their deployment-time budgets. Integer rounding dust remains in the LP budget so the three budgets sum to the total.
 
 Each pool consumes 90 occupied days of release time. Its clock pauses while nobody is staked; it neither burns empty-pool rewards nor emits them as a catch-up windfall. APR varies with reward rates and staked value. Rewards are the launched token; tax dividends are the paired asset. These are different revenue mechanisms.
 

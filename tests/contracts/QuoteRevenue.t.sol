@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.28;
 import {CurrentLaunchFixture} from "./CurrentLaunchFixture.sol";
-import {QuoteRevenueVault,QuoteVaultDeployer} from "../../contracts/src/RevenueVault.sol";
+import {DeferredMiningRevenueVault as QuoteRevenueVault} from "../../contracts/src/MiningRevenueVault.sol";
 import {LaunchFactoryV8} from "../../contracts/src/LaunchFactory.sol";
 import {LaunchFactoryV3} from "../../contracts/internal/LaunchFactoryV3.sol";
 import {StandardLaunchToken} from "../../contracts/src/LaunchToken.sol";
-import {ReflowCurve as MiningCurve} from "../../contracts/src/MiningCurve.sol";
+import {DeferredMiningCurve as MiningCurve} from "../../contracts/src/MiningCurve.sol";
 import {FixedAllocationMining as LaunchMining} from "../../contracts/src/Mining.sol";
 import {LaunchTypes} from "../../contracts/internal/LaunchTypes.sol";
 import {QuoteMock,PriceMock} from "./QuoteMocks.sol";
@@ -24,9 +24,9 @@ contract QuoteRevenueTest is CurrentLaunchFixture {
         LaunchFactoryV8 next=f;
         LaunchFactoryV3.CreateParamsV3 memory p=params(asset,true);
         p.minTarget=QuoteAssetRegistry(address(next.quoteRegistry())).quoteLaunch(asset).target;p.maxTarget=p.minTarget;
-        p.expectedConfig=next.templateConfigHash(asset,12);
+        p.expectedConfig=next.templateConfigHash(asset,13);
         p.tax=LaunchTypes.Tax(300,300,3000,0,7000,0,address(0x777),0);
-        t=StandardLaunchToken(next.createTokenWithTemplateV8(p,12));(,address pool,address vault,)=next.projects(address(t));
+        t=StandardLaunchToken(next.createTokenWithTemplateV8(p,13));(,address pool,address vault,)=next.projects(address(t));
         c=MiningCurve(pool);v=QuoteRevenueVault(payable(vault));
         if(stable){QuoteMock(asset).mint(address(this),100_000e6);IERC20(asset).approve(pool,type(uint256).max);c.buy(100_000e6,1,block.timestamp,address(this));}
         else c.buy{value:10 ether}(10 ether,1,block.timestamp,address(this));

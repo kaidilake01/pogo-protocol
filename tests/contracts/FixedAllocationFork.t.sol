@@ -4,10 +4,10 @@ import {TestBase} from "./TestBase.sol";
 import {LaunchFactoryV8} from "../../contracts/src/LaunchFactory.sol";
 import {LaunchFactoryV3} from "../../contracts/internal/LaunchFactoryV3.sol";
 import {QuoteAssetRegistry} from "../../contracts/internal/QuoteAssetRegistry.sol";
-import {ReflowCurveDeployer} from "../../contracts/src/MiningCurveDeployer.sol";
-import {ReflowCurve} from "../../contracts/src/MiningCurve.sol";
+import {DeferredMiningCurveDeployer} from "../../contracts/src/MiningCurveDeployer.sol";
+import {DeferredMiningCurve as ReflowCurve} from "../../contracts/src/MiningCurve.sol";
 import {FixedAllocationMining,FixedAllocationMiningDeployer} from "../../contracts/src/Mining.sol";
-import {QuoteRevenueVault,QuoteVaultDeployer} from "../../contracts/src/RevenueVault.sol";
+import {DeferredMiningRevenueVault as QuoteRevenueVault,DeferredMiningVaultDeployer} from "../../contracts/src/MiningRevenueVault.sol";
 import {MiningRevenueVault} from "../../contracts/internal/MiningRevenueVault.sol";
 import {LaunchTypes} from "../../contracts/internal/LaunchTypes.sol";
 import {BNBQuoteAdapter} from "../../contracts/src/BNBQuoteAdapter.sol";
@@ -22,49 +22,75 @@ interface IReflowRouter {
  function removeLiquidity(address,address,uint256,uint256,uint256,address,uint256) external returns(uint256,uint256);
 }
 interface IV2BurnPair {function burn(address) external returns(uint256,uint256);function token0() external view returns(address);function getReserves() external view returns(uint112,uint112,uint32);}
+interface ReflowCurveDeployerView {function miningDeployer() external view returns(address);}
+interface VmDeferredSnapshot {function getNonce(address) external view returns(uint64);function computeCreateAddress(address,uint256) external pure returns(address);function snapshotState() external returns(uint256);function revertToState(uint256) external returns(bool);}
 interface VmReflowForkTime {function getBlockTimestamp() external view returns(uint256);}
-contract FixedAllocationForkTest is TestBase {
+contract DeferredMiningForkTest is TestBase {
+ event log_named_uint(string key,uint256 value);
  address constant WBNB=0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c;
  IReflowRouter constant router=IReflowRouter(0x10ED43C718714eb63d5aA57B78B54704E256024E);
- event ReflowEvidence(address token,address asset,address pair,uint256 rewardBudget,uint256 creationGas,uint256 claimed);
- function testProductionTargetBnbV2Lifecycle() public {
+ event ReflowEvidence(address token,address asset,address pair,uint256 rewardBudget,uint256 creationGas,uint256 graduationGas,uint256 claimed);
+ function testDeferredMiningBnbAndPepeAllTaxesLifecycle() public {
   if(vm.envOr('RUN_BSC_FORK',uint256(0))==0){vm.skip(true);return;}
   vm.createSelectFork(vm.envOr('BSC_RPC_URL',string('https://bsc-mainnet.public.blastapi.io')));vm.deal(address(this),100 ether);
   uint256 forkTimestamp=VmReflowForkTime(address(vm)).getBlockTimestamp();
   LaunchFactoryV8 f=LaunchFactoryV8(payable(0x0abc6174ee9f9600243D14F83E215993b8BbABEb));
-  address[4] memory assets=[address(0),0x205812CdBed920aFf76C6580abD681a46D11efc7,0x431a3BEE82E2ca41e49895CbECE5bB0F76A89b7A,0xbe9D156892E55e7154BcD3cB0FEA677F9D3103E1];
+  (address activeCurve,,,bool enabled)=f.launchTemplates(13);assertTrue(enabled);
+  address miningDeployer=ReflowCurveDeployerView(activeCurve).miningDeployer();
+  address[2] memory assets=[address(0),0x25d887Ce7a35172C62FeBFD67a1856F20FaEbB00];
   uint256 salt;(address td,bytes32 hash)=f.tokenDeploymentConfig();
   // Exercise BNB launches with zero and nonzero project taxes.
-  for(uint256 j;j<1;j++)for(uint256 taxed;taxed<2;taxed++){
+  for(uint256 j;j<2;j++)for(uint256 taxed;taxed<3;taxed++){
+   uint256 checkpoint=VmDeferredSnapshot(address(vm)).snapshotState();
+   uint16 taxBps=taxed==0?0:taxed==1?300:500;
    vm.warp(forkTimestamp);
    address asset=assets[j];QuoteAssetRegistry.LaunchQuote memory q=QuoteAssetRegistry(address(f.quoteRegistry())).quoteLaunch(asset);
-   LaunchFactoryV3.CreateParamsV3 memory p;p.name='Reflow fork';p.symbol='FLY';p.metadataURI='ipfs://takeoff-fork';p.quoteAsset=asset;p.minTarget=q.target;p.maxTarget=q.target;
-   p.expectedConfig=f.templateConfigHash(asset,12);p.tax=LaunchTypes.Tax(taxed==0?0:300,taxed==0?0:300,4000,2000,3000,1000,address(this),0);
+   LaunchFactoryV3.CreateParamsV3 memory p;p.name='Deferred mining fork';p.symbol='MINE';p.metadataURI='ipfs://mining-fork';p.quoteAsset=asset;p.minTarget=q.target;p.maxTarget=q.target;
+   p.expectedConfig=f.templateConfigHash(asset,13);p.tax=LaunchTypes.Tax(taxBps,taxBps,4000,2000,3000,1000,address(this),0);
    for(;;salt++){
     uint256 free;assembly('memory-safe'){free:=mload(0x40)}p.salt=bytes32(salt);
     address predicted=address(uint160(uint256(keccak256(abi.encodePacked(bytes1(0xff),td,keccak256(abi.encode(address(this),p.salt)),hash)))));
     assembly('memory-safe'){mstore(0x40,free)}if(uint160(predicted)&0xffff==0x6666&&predicted.code.length==0){salt++;break;}
    }
    uint256 beforeGas=gasleft();address token;
-   if(taxed==1){
-    LaunchFactoryV3.DeveloperBuy memory buy=LaunchFactoryV3.DeveloperBuy(.001 ether,1,1,block.timestamp,true,route(asset));
-    token=f.createTokenAndBuyWithTemplateV8{value:.001 ether}(p,buy,12);
-   }else token=f.createTokenWithTemplateV8(p,12);
-   uint256 creationGas=beforeGas-gasleft();assertTrue(creationGas*130/100+100000<16_777_216);
-   (,address pool,address vault,)=f.projects(token);ReflowCurve c=ReflowCurve(pool);FixedAllocationMining m=FixedAllocationMining(c.stakingPool());
-   assertEq(c.VERSION(),11);assertEq(m.VERSION(),14);assertEq(m.penaltyRecipient(),address(0xdead));
+   LaunchFactoryV3.DeveloperBuy memory buy=LaunchFactoryV3.DeveloperBuy(.1 ether,1,1,block.timestamp,true,route(asset));
+   token=f.createTokenAndBuyWithTemplateV8{value:.1 ether}(p,buy,13);
+   uint256 creationGas=beforeGas-gasleft();assertTrue(creationGas*150/100+100000<16_777_216);
+   (,address pool,address vault,)=f.projects(token);ReflowCurve c=ReflowCurve(pool);
+   assertEq(c.VERSION(),15);assertEq(c.stakingPool(),address(0));assertEq(QuoteRevenueVault(payable(vault)).stakingPool(),address(0));
+   assertTrue(IERC20(token).balanceOf(address(this))>0);
+   address futureMining=VmDeferredSnapshot(address(vm)).computeCreateAddress(miningDeployer,VmDeferredSnapshot(address(vm)).getNonce(miningDeployer));
+   if(asset==address(0))c.buy{value:.00001 ether}(.00001 ether,1,block.timestamp,futureMining);
+   else {
+    uint256 beforeDonation=IERC20(asset).balanceOf(address(this));
+    BNBQuoteAdapter(f.bnbAdapter()).convertBNB{value:.00001 ether}(asset,1,block.timestamp,address(this),route(asset));
+    uint256 donation=IERC20(asset).balanceOf(address(this))-beforeDonation;
+    IERC20(asset).approve(pool,donation);c.buy(donation,1,block.timestamp,futureMining);
+   }
+   assertTrue(QuoteRevenueVault(payable(vault)).holderBalance(futureMining)>0);
+   vm.expectRevert();c.releaseMiningReward(address(this),1);
+   vm.expectRevert();QuoteRevenueVault(payable(vault)).setStakingPool(address(this));
    if(asset==address(0)){assertEq(c.graduationTarget(),6.666 ether);c.buy{value:8 ether}(8 ether,1,block.timestamp,address(this));}
    else{
-    BNBQuoteAdapter(f.bnbAdapter()).convertBNB{value:.03 ether}(asset,1,block.timestamp,address(this),route(asset));
-    IERC20(asset).approve(pool,type(uint256).max);c.buy(q.target*2,1,block.timestamp,address(this));
+    BNBQuoteAdapter(f.bnbAdapter()).convertBNB{value:20 ether}(asset,1,block.timestamp,address(this),route(asset));
+    IERC20(asset).approve(pool,type(uint256).max);c.buy(IERC20(asset).balanceOf(address(this)),1,block.timestamp,address(this));
    }
-   c.graduate();address pair=c.pair();
+   uint256 beforeGraduationGas=gasleft();c.graduate();uint256 graduationGas=beforeGraduationGas-gasleft();address pair=c.pair();
+   assertTrue(graduationGas*150/100+100000<16_777_216);
+   FixedAllocationMining m=FixedAllocationMining(c.stakingPool());
+   assertEq(m.VERSION(),14);assertEq(m.penaltyRecipient(),address(0xdead));
+   assertEq(address(m),futureMining);assertEq(QuoteRevenueVault(payable(vault)).holderBalance(futureMining),0);
+   assertEq(QuoteRevenueVault(payable(vault)).eligibleSupply(),IERC20(token).balanceOf(address(this)));
+   assertEq(m.fundingPool(),pool);assertEq(m.vault(),vault);assertEq(address(m.token()),token);
+   assertEq(QuoteRevenueVault(payable(vault)).stakingPool(),address(m));
+   vm.expectRevert();c.graduate();uint256 rewards=m.rewardBudget();vm.expectRevert();m.activate(rewards,pair);
+   vm.expectRevert();QuoteRevenueVault(payable(vault)).setStakingPool(address(m));
    QuoteRevenueVault v=QuoteRevenueVault(payable(vault));assertEq(v.DIVIDEND_ASSET_VERSION(),1);
    assertEq(v.earned(address(this),token),0);assertEq(v.recipientCredit(token),0);
-   if(taxed==1){
+   if(taxed!=0){
     address[] memory swapPath=new address[](2);swapPath[0]=asset==address(0)?WBNB:asset;swapPath[1]=token;
-    (uint112 r0,uint112 r1,)=IV2BurnPair(pair).getReserves();
-    uint256 quoteInput=(IV2BurnPair(pair).token0()==token?uint256(r1):uint256(r0))/100;
+    (uint112 beforeR0,uint112 beforeR1,)=IV2BurnPair(pair).getReserves();
+    uint256 quoteInput=(IV2BurnPair(pair).token0()==token?uint256(beforeR1):uint256(beforeR0))/100;
     if(asset==address(0))router.swapExactETHForTokensSupportingFeeOnTransferTokens{value:quoteInput}(1,swapPath,address(this),block.timestamp);
     else {IERC20(asset).approve(address(router),quoteInput);router.swapExactTokensForTokensSupportingFeeOnTransferTokens(quoteInput,1,swapPath,address(this),block.timestamp);}
     swapPath[0]=token;swapPath[1]=asset==address(0)?WBNB:asset;
@@ -86,7 +112,7 @@ assertEq(m.poolState(0).budget,m.rewardBudget()/25);assertEq(m.poolState(1).budg
    // Match the website's exact ratio, 1% minima, and taxed LP estimate.
    (uint112 r0,uint112 r1,)=IV2BurnPair(pair).getReserves();bool first=IV2BurnPair(pair).token0()==token;
    uint256 rt=first?r0:r1;uint256 rq=first?r1:r0;uint256 qa=q.target/100;uint256 ta=qa*rt/rq;
-   uint256 supply=IERC20(pair).totalSupply();uint256 net=ta-ta*(taxed==0?0:300)/10000;
+   uint256 supply=IERC20(pair).totalSupply();uint256 net=ta-ta*(taxBps)/10000;
    uint256 expectedLP=net*supply/rt;uint256 quoteLP=(ta*rq/rt)*supply/rq;if(quoteLP<expectedLP)expectedLP=quoteLP;
    uint256 lp;
    if(asset==address(0)){(,,lp)=router.addLiquidityETH{value:qa}(token,ta,ta*99/100,qa*99/100,address(this),block.timestamp);}
@@ -114,11 +140,39 @@ assertEq(m.poolState(0).budget,m.rewardBudget()/25);assertEq(m.poolState(1).budg
    else router.removeLiquidity(token,settled,exitLP,grossToken*99/100,grossQuote*99/100,address(this),block.timestamp);
    assertTrue(IERC20(token).balanceOf(address(this))>tokenBefore);assertTrue((asset==address(0)?address(this).balance:IERC20(settled).balanceOf(address(this)))>quoteBefore);
    assertEq(IERC20(pair).balanceOf(address(this)),0);
-   emit ReflowEvidence(token,asset,pair,m.rewardBudget(),creationGas,m.claimedRewards());
+   emit log_named_uint('asset index: BNB 0, PEPE 1',j);
+   emit log_named_uint('tax bps',taxBps);
+   emit log_named_uint('creation gas',creationGas);
+   emit log_named_uint('graduation gas',graduationGas);
+   emit ReflowEvidence(token,asset,pair,m.rewardBudget(),creationGas,graduationGas,m.claimedRewards());
+   assertTrue(VmDeferredSnapshot(address(vm)).revertToState(checkpoint));
   }
+ }
+ function testRejectedFirstBuyRollsBackCreationAndCanRetrySameSalt() public {
+  if(vm.envOr('RUN_BSC_FORK',uint256(0))==0){vm.skip(true);return;}
+  vm.createSelectFork(vm.envOr('BSC_RPC_URL',string('https://bsc-mainnet.public.blastapi.io')));vm.deal(address(this),1 ether);
+  LaunchFactoryV8 f=LaunchFactoryV8(payable(0x0abc6174ee9f9600243D14F83E215993b8BbABEb));
+  (,,,bool enabled)=f.launchTemplates(13);assertTrue(enabled);
+  QuoteAssetRegistry.LaunchQuote memory q=QuoteAssetRegistry(address(f.quoteRegistry())).quoteLaunch(address(0));
+  LaunchFactoryV3.CreateParamsV3 memory p;p.name='Atomic buy';p.symbol='ATOMIC';p.metadataURI='ipfs://atomic';p.minTarget=q.target;p.maxTarget=q.target;
+  p.expectedConfig=f.templateConfigHash(address(0),13);p.tax=LaunchTypes.Tax(0,0,10000,0,0,0,address(this),0);
+  (address td,bytes32 initHash)=f.tokenDeploymentConfig();address predicted;
+  for(uint256 salt;;salt++){
+   uint256 free;assembly('memory-safe'){free:=mload(0x40)}p.salt=bytes32(salt);
+   predicted=address(uint160(uint256(keccak256(abi.encodePacked(bytes1(0xff),td,keccak256(abi.encode(address(this),p.salt)),initHash)))));
+   assembly('memory-safe'){mstore(0x40,free)}if(uint160(predicted)&0xffff==0x6666&&predicted.code.length==0)break;
+  }
+  uint256 count=f.tokenCount();uint256 funds=address(this).balance;
+  LaunchFactoryV3.DeveloperBuy memory b=LaunchFactoryV3.DeveloperBuy(.1 ether,1,1_000_000_000 ether,block.timestamp,true,route(address(0)));
+  vm.expectRevert();f.createTokenAndBuyWithTemplateV8{value:.1 ether}(p,b,13);
+  assertEq(f.tokenCount(),count);assertEq(predicted.code.length,0);assertEq(address(this).balance,funds);
+  (address creator,address pool,address vault,)=f.projects(predicted);assertEq(creator,address(0));assertEq(pool,address(0));assertEq(vault,address(0));
+  b.minTokens=1;address token=f.createTokenAndBuyWithTemplateV8{value:.1 ether}(p,b,13);
+  assertEq(token,predicted);assertTrue(IERC20(token).balanceOf(address(this))>0);assertEq(f.tokenCount(),count+1);
  }
  function route(address asset) private pure returns(BNBQuoteAdapter.Route memory r){
   if(asset==address(0))return BNBQuoteAdapter.Route(0,new address[](0),'');
+  if(asset==0x25d887Ce7a35172C62FeBFD67a1856F20FaEbB00)return BNBQuoteAdapter.Route(2,new address[](0),abi.encodePacked(WBNB,uint24(10000),asset));
   bytes memory path=asset==0xbe9D156892E55e7154BcD3cB0FEA677F9D3103E1?abi.encodePacked(WBNB,uint24(2500),asset):abi.encodePacked(WBNB,uint24(100),address(0x55d398326f99059fF775485246999027B3197955),asset==0x205812CdBed920aFf76C6580abD681a46D11efc7?uint24(100):uint24(2500),asset);
   return BNBQuoteAdapter.Route(2,new address[](0),path);
  }

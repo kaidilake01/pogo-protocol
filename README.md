@@ -65,24 +65,23 @@ The examples accept `BSC_RPC_URL` for an optional RPC endpoint. They never load 
 
 ## Current launch model
 
-PEPE is currently unavailable for new website launches. Existing PEPE-paired markets retain their trading routes.
-
 | Parameter | Current templates |
 | --- | --- |
 | Supply | 1 billion tokens |
-| Templates | DeFi staking & liquidity mining (12); CZ transfer (10) |
+| Templates | DeFi staking & liquidity mining (13); CZ transfer (10) |
 | Current graduation target | 6.666 BNB equivalent |
 | Opening reserves | Preserved independently of the graduation target |
 | Creator revenue / holder dividends | Paired asset on both curve and DEX |
 | Mining reward allocation | 4% flexible / 16% locked single / 80% V2 LP (fixed reward budgets) |
 | Reward duration | 90 occupied days per pool; empty pools pause |
-| Locks | 24 hours per deposit; 10% early-exit principal deduction |
+| Locked single and LP pools | 24 hours per deposit; 10% early-exit principal deduction |
 | Early-exit destination | Single tokens and LP receipts to dEaD |
+| DeFi mining deployment | Deployed and funded during graduation; no mining before graduation |
 | Creation charge | Zero, plus wallet transaction gas |
 
 DEX tax tokens are automatically converted before distribution; beneficiaries receive the paired asset directly. Existing immutable projects retain their original rules. [Read the full economics](docs/economics.md).
 
-The factory is upgradeable. Newly launched standard tokens, curves, and vaults use full standalone deployments. Required inherited implementations live in `contracts/internal/`; they are dependencies, not alternative launch templates. Existing projects retain their deployment-time terms.
+The factory is upgradeable. Tokens, curves and vaults are deployed as standalone contracts at creation. The DeFi mining contract is deployed during graduation, when its actual reward budget and V2 LP pair are known. Required inherited implementations live in `contracts/internal/`; they are dependencies, not alternative launch templates. Existing projects retain their deployment-time terms.
 
 An off-chain caller is required to submit graduation and maintenance transactions. The hosted keeper does this automatically when execution conditions and gas limits permit; smart contracts do not wake up on a timer.
 
