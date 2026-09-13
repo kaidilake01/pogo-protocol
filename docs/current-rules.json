@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-09-12",
+  "updatedAt": "2026-09-13",
   "chainId": 56,
-  "graduationTargetBNB": "0.01",
+  "graduationTargetBNB": "6.666",
   "creationFeeWei": "0",
   "miningTemplateId": 12,
   "transferTemplateId": 10,
@@ -18,7 +18,7 @@
   "addresses": {
     "factory": "0x0abc6174ee9f9600243D14F83E215993b8BbABEb",
     "implementation": "0xc8C820a3DEc5666E9a4B02275E293a6f15f4b813",
-    "registry": "0x65b2dfae97e405a6435922d7c0d5431807bcd2bb",
+    "registry": "0xe15f2884D6C36Bee3aafc38859F1F2f54046A730",
     "miningCurveDeployer": "0x17160724C60bA4eA8d0C18690bd73d9c844eD388",
     "miningDeployer": "0x066997F23fc2ba8006D340c75925582B7f253e62",
     "vaultDeployer": "0xD8FeFE95d325c918a4c7E2754967567E41922cc3",

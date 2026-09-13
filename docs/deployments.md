@@ -11,7 +11,7 @@ The machine-readable [snapshot](deployments/bsc-mainnet.json) and SDK constants 
 | Mining curve deployer | `0x17160724C60bA4eA8d0C18690bd73d9c844eD388` |
 | Default DeFi template | 12 |
 | CZ transfer template | 10 (displayed last) |
-| Graduation test target | 0.01 BNB equivalent |
+| Graduation target | 6.666 BNB equivalent |
 
 Both enabled templates deploy the paired-asset-only vault. Template registration preserves old projects and their addresses. Old template IDs are disabled for new launches. Refresh `launchTemplates`, `templateConfigHash` and quote targets on-chain before signing; this file is a dated snapshot.
 

@@ -69,7 +69,7 @@ The examples accept `BSC_RPC_URL` for an optional RPC endpoint. They never load 
 | --- | --- |
 | Supply | 1 billion tokens |
 | Templates | DeFi staking & liquidity mining (12); CZ transfer (10) |
-| Current graduation target | 0.01 BNB equivalent for testing |
+| Current graduation target | 6.666 BNB equivalent |
 | Opening reserves | Preserved independently of the graduation target |
 | Creator revenue / holder dividends | Paired asset on both curve and DEX |
 | Mining reward allocation | 4% flexible / 16% locked single / 80% V2 LP (fixed reward budgets) |

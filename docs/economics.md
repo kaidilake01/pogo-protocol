@@ -1,18 +1,18 @@
 # Launch and mining economics
 
-## Current test deployment
+## Current BSC mainnet deployment
 
 | Parameter | Value |
 | --- | --- |
 | Initial supply | 1 billion tokens, 18 decimals |
 | Creation charge | Zero; transaction gas remains payable |
-| Net graduation target | 0.01 BNB equivalent, fixed in quote-asset units at creation |
+| Net graduation target | 6.666 BNB equivalent, fixed in quote-asset units at creation |
 | Opening virtual BNB reserve | ceil(18 × 25 / 73) BNB |
 | Opening virtual token reserve | ceil(800 million × 98 / 73) tokens |
 | Project buy/sell taxes | Independently 0–5% |
 | External market | PancakeSwap V2 |
 
-Reducing the graduation target does not scale down opening virtual reserves. With virtual quote Q, virtual tokens T and net graduation target G, the sale amount is floor(T×G/(Q+G)). The contract calculates the paired assets available for liquidity after graduation deductions, then matches tokens at the graduation price. The actual remaining token balance goes to mining or the CZ transfer destination according to the selected template. At the 0.01 BNB test target, the remainder is about 996.56 million tokens. The actual contract balance determines the budget.
+Reducing the graduation target does not scale down opening virtual reserves. With virtual quote Q, virtual tokens T and net graduation target G, the sale amount is floor(T×G/(Q+G)). The contract calculates the paired assets available for liquidity after graduation deductions, then matches tokens at the graduation price. The actual remaining token balance goes to mining or the CZ transfer destination according to the selected template. At the 6.666 BNB graduation target, the remainder is about 179.2986 million tokens. The actual contract balance determines the budget.
 
 CZ transfer is an ordinary transfer to `0x28816c4C4792467390C90e5B426F198570E29307`, preserving total supply. It is not a burn, a lock or an endorsement. The recipient can transfer the tokens and receives holder dividends if eligible.
 

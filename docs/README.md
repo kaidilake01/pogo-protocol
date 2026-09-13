@@ -14,3 +14,5 @@ Start with the protocol architecture, then choose the guide for your integration
 | [Testing](testing.md) | Reproducible checks and release validation |
 
 For executable starting points, see [examples](../examples/README.md). For changes, read [contributing](../CONTRIBUTING.md). Report security issues through the [security policy](../SECURITY.md).
+
+Current release: [BSC mainnet configuration](production-release.md).

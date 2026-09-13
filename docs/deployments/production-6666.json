@@ -1,0 +1,166 @@
+{
+  "factory": "0x0abc6174ee9f9600243D14F83E215993b8BbABEb",
+  "owner": "0x5E807ae9C82bA691Fca0CC1f56EB01eb58d6f04C",
+  "registry": "0xe15f2884D6C36Bee3aafc38859F1F2f54046A730",
+  "source": "0xaa882B7d53eC9d028f877C5c5202ab2faB1EcD46",
+  "previousRegistry": "0x65b2dfae97e405a6435922d7c0d5431807bcd2bb",
+  "targetBNB": "6.666",
+  "targetWei": "6666000000000000000",
+  "virtualQuote": "6164383561643835617",
+  "enabledTemplateIds": [
+    10,
+    12
+  ],
+  "rewardSplitBps": [
+    400,
+    1600,
+    8000
+  ],
+  "miningCurveDeployer": "0x17160724C60bA4eA8d0C18690bd73d9c844eD388",
+  "vaultDeployer": "0xD8FeFE95d325c918a4c7E2754967567E41922cc3",
+  "legacyStatePreserved": true,
+  "quotes": [
+    {
+      "asset": "0x0000000000000000000000000000000000000000",
+      "target": "6666000000000000000",
+      "virtualQuote": "6164383561643835617"
+    },
+    {
+      "asset": "0x55d398326f99059fF775485246999027B3197955",
+      "target": "4821389179536167807826",
+      "virtualQuote": "4458579688361868063906"
+    },
+    {
+      "asset": "0xcE24439F2D9C6a2289F741120FE202248B666666",
+      "target": "4822854539229971645807",
+      "virtualQuote": "4459934779752264076983"
+    },
+    {
+      "asset": "0x8d0D000Ee44948FC98c9B98A4FA4921476f08B0d",
+      "target": "4820788868441273508812",
+      "virtualQuote": "4458024550671313183987"
+    },
+    {
+      "asset": "0xbe9D156892E55e7154BcD3cB0FEA677F9D3103E1",
+      "target": "32129609940466136392",
+      "virtualQuote": "29711857089564630524"
+    },
+    {
+      "asset": "0xCA750eF65f295BBECd685Abf54e82CAf297BDB61",
+      "target": "25984252294627587687",
+      "virtualQuote": "24028937549746237211"
+    },
+    {
+      "asset": "0x7138b48df7D98D7e3cc221BfE7192D0a178182D8",
+      "target": "6317614664921256426",
+      "virtualQuote": "5842214219808074078"
+    },
+    {
+      "asset": "0x205812CdBed920aFf76C6580abD681a46D11efc7",
+      "target": "6768791794390199911",
+      "virtualQuote": "6259440274456740112"
+    },
+    {
+      "asset": "0x02Fca66C1D1aFB4E2A7884261eB00F63598a7436",
+      "target": "22220537285843655226",
+      "virtualQuote": "20548442060568340776"
+    },
+    {
+      "asset": "0x431a3BEE82E2ca41e49895CbECE5bB0F76A89b7A",
+      "target": "14484012536193104701",
+      "virtualQuote": "13394090726785480841"
+    },
+    {
+      "asset": "0x5b1910eAaD6450E50f816082Aa078C41F10C292f",
+      "target": "13164453716642037323",
+      "virtualQuote": "12173828696203010976"
+    },
+    {
+      "asset": "0x80106cb3EAD06659A5ad19DF39D9b4733863B9b0",
+      "target": "9739045786874418251",
+      "virtualQuote": "9006182681473945092"
+    },
+    {
+      "asset": "0x3F53De71c126BdaBAe20f9cD64848d317f6C3238",
+      "target": "14202001686424306883",
+      "virtualQuote": "13133301190853889699"
+    },
+    {
+      "asset": "0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c",
+      "target": "62476493619395718",
+      "virtualQuote": "57775138052287571"
+    },
+    {
+      "asset": "0x570A5D26f7765Ecb712C0924E4De545B89fD43dF",
+      "target": "47579728528515156707",
+      "virtualQuote": "43999354396737935132"
+    },
+    {
+      "asset": "0x2170Ed0880ac9A755fd29B2688956BD959F933F8",
+      "target": "1917101559775994146",
+      "virtualQuote": "1772839685131247438"
+    },
+    {
+      "asset": "0xA394dCEa3fd3847fD793afBFd163E2e3858B7c65",
+      "target": "43630939919125989416",
+      "virtualQuote": "40347712093688879649"
+    },
+    {
+      "asset": "0x4eF9d3062c7F6ebA4AAE4990c5036598C6eff4ec",
+      "target": "43996703965007015441",
+      "virtualQuote": "40685952398499761515"
+    },
+    {
+      "asset": "0xD6829Ea836b6FA224d099D40E54B31262f874631",
+      "target": "62586319338964044046",
+      "virtualQuote": "57876699387473993607"
+    },
+    {
+      "asset": "0xE87afb3076AeB0f9B14E368DE8145ae6a2826A14",
+      "target": "37114849707839616240",
+      "virtualQuote": "34321957610544261223"
+    },
+    {
+      "asset": "0xE28Cd11C99AF2df76bb8aDA4Cd0ef3904378280F",
+      "target": "107301552856562564345",
+      "virtualQuote": "99227111996377351342"
+    },
+    {
+      "asset": "0xd97d097a89113fa59b76c572E5b2Eb647E8eefaf",
+      "target": "40457098983333693964",
+      "virtualQuote": "37412702658964860083"
+    },
+    {
+      "asset": "0x4af1D41cd9dD950dcA43984b43aaA2A8702714Ac",
+      "target": "485634646116731213523",
+      "virtualQuote": "449090643487353624579"
+    },
+    {
+      "asset": "0x25d887Ce7a35172C62FeBFD67a1856F20FaEbB00",
+      "target": "1399193573839364946711872407",
+      "virtualQuote": "1293904270346995437941758387"
+    }
+  ],
+  "verificationEntries": [
+    {
+      "address": "0xe15f2884D6C36Bee3aafc38859F1F2f54046A730",
+      "constructorArguments": "0x000000000000000000000000aa882b7d53ec9d028f877c5c5202ab2fab1ecd460000000000000000000000000000000000000000000000005c8263ae98c10000"
+    }
+  ],
+  "transactions": [
+    {
+      "name": "QuoteAssetRegistryV7",
+      "hash": "0x8713e9b0a1d76f42de81cd99654022bb8cfcabb84876c4c6b366b719b6646c8c",
+      "address": "0xe15f2884D6C36Bee3aafc38859F1F2f54046A730",
+      "cost": "30877500000000",
+      "block": 121604843
+    },
+    {
+      "name": "activate-production-target",
+      "hash": "0xf0039982b1e4dadffadb23a4746b506e2fc456ce799dd079f34bb5aed58b3d0f",
+      "cost": "3480750000000",
+      "block": 121604881
+    }
+  ],
+  "totalGasBNB": "0.00003435825"
+}

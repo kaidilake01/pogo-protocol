@@ -27,14 +27,11 @@ contract FixedAllocationForkTest is TestBase {
  address constant WBNB=0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c;
  IReflowRouter constant router=IReflowRouter(0x10ED43C718714eb63d5aA57B78B54704E256024E);
  event ReflowEvidence(address token,address asset,address pair,uint256 rewardBudget,uint256 creationGas,uint256 claimed);
- function testFixedAllocationBnbV2TaxedAndUntaxedThreePools() public {
+ function testProductionTargetBnbV2Lifecycle() public {
   if(vm.envOr('RUN_BSC_FORK',uint256(0))==0){vm.skip(true);return;}
-  vm.createSelectFork(vm.envOr('BSC_RPC_URL',string('https://bsc-dataseed.bnbchain.org')));vm.deal(address(this),100 ether);
+  vm.createSelectFork(vm.envOr('BSC_RPC_URL',string('https://bsc-mainnet.public.blastapi.io')));vm.deal(address(this),100 ether);
   uint256 forkTimestamp=VmReflowForkTime(address(vm)).getBlockTimestamp();
   LaunchFactoryV8 f=LaunchFactoryV8(payable(0x0abc6174ee9f9600243D14F83E215993b8BbABEb));
-  FixedAllocationMiningDeployer md=new FixedAllocationMiningDeployer();ReflowCurveDeployer cd=new ReflowCurveDeployer(address(f),address(md));
-  address vaultDeployer=0xD8FeFE95d325c918a4c7E2754967567E41922cc3;
-  vm.prank(f.owner());f.registerLaunchTemplate(252,address(cd),vaultDeployer,1);
   address[4] memory assets=[address(0),0x205812CdBed920aFf76C6580abD681a46D11efc7,0x431a3BEE82E2ca41e49895CbECE5bB0F76A89b7A,0xbe9D156892E55e7154BcD3cB0FEA677F9D3103E1];
   uint256 salt;(address td,bytes32 hash)=f.tokenDeploymentConfig();
   // Exercise BNB launches with zero and nonzero project taxes.
@@ -42,7 +39,7 @@ contract FixedAllocationForkTest is TestBase {
    vm.warp(forkTimestamp);
    address asset=assets[j];QuoteAssetRegistry.LaunchQuote memory q=QuoteAssetRegistry(address(f.quoteRegistry())).quoteLaunch(asset);
    LaunchFactoryV3.CreateParamsV3 memory p;p.name='Reflow fork';p.symbol='FLY';p.metadataURI='ipfs://takeoff-fork';p.quoteAsset=asset;p.minTarget=q.target;p.maxTarget=q.target;
-   p.expectedConfig=f.templateConfigHash(asset,252);p.tax=LaunchTypes.Tax(taxed==0?0:300,taxed==0?0:300,4000,2000,3000,1000,address(this),0);
+   p.expectedConfig=f.templateConfigHash(asset,12);p.tax=LaunchTypes.Tax(taxed==0?0:300,taxed==0?0:300,4000,2000,3000,1000,address(this),0);
    for(;;salt++){
     uint256 free;assembly('memory-safe'){free:=mload(0x40)}p.salt=bytes32(salt);
     address predicted=address(uint160(uint256(keccak256(abi.encodePacked(bytes1(0xff),td,keccak256(abi.encode(address(this),p.salt)),hash)))));
@@ -51,12 +48,12 @@ contract FixedAllocationForkTest is TestBase {
    uint256 beforeGas=gasleft();address token;
    if(taxed==1){
     LaunchFactoryV3.DeveloperBuy memory buy=LaunchFactoryV3.DeveloperBuy(.001 ether,1,1,block.timestamp,true,route(asset));
-    token=f.createTokenAndBuyWithTemplateV8{value:.001 ether}(p,buy,252);
-   }else token=f.createTokenWithTemplateV8(p,252);
+    token=f.createTokenAndBuyWithTemplateV8{value:.001 ether}(p,buy,12);
+   }else token=f.createTokenWithTemplateV8(p,12);
    uint256 creationGas=beforeGas-gasleft();assertTrue(creationGas*130/100+100000<16_777_216);
    (,address pool,address vault,)=f.projects(token);ReflowCurve c=ReflowCurve(pool);FixedAllocationMining m=FixedAllocationMining(c.stakingPool());
    assertEq(c.VERSION(),11);assertEq(m.VERSION(),14);assertEq(m.penaltyRecipient(),address(0xdead));
-   if(asset==address(0)){assertEq(c.graduationTarget(),.01 ether);c.buy{value:.02 ether}(.02 ether,1,block.timestamp,address(this));}
+   if(asset==address(0)){assertEq(c.graduationTarget(),6.666 ether);c.buy{value:8 ether}(8 ether,1,block.timestamp,address(this));}
    else{
     BNBQuoteAdapter(f.bnbAdapter()).convertBNB{value:.03 ether}(asset,1,block.timestamp,address(this),route(asset));
     IERC20(asset).approve(pool,type(uint256).max);c.buy(q.target*2,1,block.timestamp,address(this));
@@ -82,7 +79,7 @@ contract FixedAllocationForkTest is TestBase {
     v.claim(asset,address(this));assertEq(v.earned(address(this),asset),0);
    }
 assertEq(m.poolState(0).budget,m.rewardBudget()/25);assertEq(m.poolState(1).budget,m.rewardBudget()*4/25);assertEq(m.poolState(2).budget,m.rewardBudget()-m.rewardBudget()/25-m.rewardBudget()*4/25);assertEq(m.lpToken(),pair);assertTrue(IERC20(pair).balanceOf(address(0xdead))>0);
-   assertTrue(m.rewardBudget()>996_000_000 ether);assertEq(IERC20(token).balanceOf(pool),m.rewardBudget());
+   assertTrue(m.rewardBudget()>179_000_000 ether && m.rewardBudget()<180_000_000 ether);assertEq(IERC20(token).balanceOf(pool),m.rewardBudget());
    address settled=asset==address(0)?WBNB:asset;
    if(asset==address(0))IWBNB(WBNB).deposit{value:.03 ether}();
    IERC20(token).approve(address(router),type(uint256).max);IERC20(settled).approve(address(router),type(uint256).max);

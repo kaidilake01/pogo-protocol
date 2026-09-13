@@ -8,7 +8,7 @@ The current factory is `LaunchFactoryV8`, an upgradeable factory with append-onl
 | --- | --- |
 | LaunchFactoryV8 | CREATE2 token creation, template selection, configuration hashes |
 | StandardTokenDeployer / StandardLaunchToken | Full ERC-20 deployments, fixed taxes, holder-share synchronization |
-| QuoteAssetRegistryV7 | Supported quote assets; independent 0.01 BNB test target and original opening reserves |
+| QuoteAssetRegistryV7 | Supported quote assets; independent 6.666 BNB graduation target and original opening reserves |
 | ReflowCurveDeployer / ReflowCurve | DeFi curve, graduation and actual leftover reward funding |
 | FixedAllocationMining | Flexible single-token, locked single-token and canonical V2 LP farming |
 | DirectedLaunchCurveDeployer | CZ transfer template; remaining tokens transfer to the fixed recipient |

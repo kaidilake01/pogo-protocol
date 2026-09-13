@@ -7,7 +7,7 @@ assert.deepEqual(rules.rewardSplitBps,[400,1600,8000]);
 assert.equal(rules.activeDays,90);
 assert.equal(rules.lockHours,24);
 assert.equal(rules.earlyExitBps,1000);
-assert.equal(rules.graduationTargetBNB,'0.01');
+assert.equal(rules.graduationTargetBNB,'6.666');
 const deployment=JSON.parse(fs.readFileSync('docs/deployments/bsc-mainnet.json','utf8'));
 assert.deepEqual(deployment.enabledTemplateIds,[rules.miningTemplateId,rules.transferTemplateId]);
 for(const [key,address] of Object.entries(rules.addresses)){
@@ -19,7 +19,7 @@ function walk(dir){for(const e of fs.readdirSync(dir,{withFileTypes:true})){if([
 walk(root);
 for(const file of files){
  const text=fs.readFileSync(file,'utf8');
- assert(!/6\.666|QuoteRevenueForkTest|templates 9 and 10|Graduation seeding fee/.test(text),`Stale documentation: ${file}`);
+ assert(!/0\.01 BNB (?:test|equivalent)|6\.6666|QuoteRevenueForkTest|templates 9 and 10|Graduation seeding fee/.test(text),`Stale documentation: ${file}`);
  for(const m of text.matchAll(/\]\(([^\s)]+)(?:\s+"[^"]*")?\)/g)){
   const url=m[1];if(/^(?:https?:|mailto:|#)/.test(url))continue;
   const target=decodeURIComponent(url.split('#')[0]);if(target)assert(fs.existsSync(path.resolve(path.dirname(file),target)),`Broken local link: ${file} -> ${url}`);
