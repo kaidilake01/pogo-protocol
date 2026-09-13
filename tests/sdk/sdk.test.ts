@@ -135,3 +135,11 @@ test("standard initial price and graduation cap match the documented curve", () 
   assert.equal(result.used + result.refund, parseEther("100"));
   assert.equal(result.used - result.platform - result.tax, target);
 });
+
+test("initial-buy default follows the current 6.666 BNB curve", () => {
+ const target=parseEther("6.666"), opening=(parseEther("18")*25n+72n)/73n;
+ const current=previewInitialBuy(parseEther("8"),target,opening,0);
+ assert.deepEqual(current,previewInitialBuy(parseEther("8"),target,opening,0,11));
+ assert.equal(current.used-current.platform-current.tax,target);
+ assert.equal(current.tokens,557980307873647527569535079n);
+});

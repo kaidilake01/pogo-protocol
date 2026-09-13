@@ -29,7 +29,7 @@ console.log(configuration.quote.target);
 | `previewInitialBuy` | Fresh-curve integer preview; explicitly pass the curve version |
 | `factoryAbi`, `curveAbi`, `tokenAbi`, `vaultAbi`, `registryAbi`, `bnbRouterAbi`, `adapterAbi` | Contract interfaces, including events and errors |
 
-Amounts are `bigint` in raw token units. Deadlines are Unix seconds. Builders never estimate gas, approve assets, sign, broadcast, or ensure a route is currently liquid. Validate and simulate against fresh on-chain state. `previewInitialBuy` defaults to legacy version 3 for compatibility; pass `Number(configuration.curveVersion)` for standard launches.
+Amounts are `bigint` in raw token units. Deadlines are Unix seconds. Builders never estimate gas, approve assets, sign, broadcast, or ensure a route is currently liquid. Validate and simulate against fresh on-chain state. `previewInitialBuy` defaults to the curve version in the current mainnet snapshot. Pass `Number(configuration.curveVersion)` when quoting a specific existing project.
 
 The package includes a dated public deployment snapshot. Resolve mutable configuration through the factory. Use this SDK for the multi-asset ABI family; the oldest single-asset V2 project interfaces are available in Solidity sources but not wrapped by `PogoClient`.
 

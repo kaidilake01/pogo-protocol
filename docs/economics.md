@@ -16,6 +16,19 @@ Reducing the graduation target does not scale down opening virtual reserves. Wit
 
 CZ transfer is an ordinary transfer to `0x28816c4C4792467390C90e5B426F198570E29307`, preserving total supply. It is not a burn, a lock or an endorsement. The recipient can transfer the tokens and receives holder dividends if eligible.
 
+## How the reserve asset supports a launch
+
+The factory creates a standalone token contract; the reserve asset does not mint the token. The initial billion tokens enter the launch curve. BNB, PEPE and other supported reserve assets determine what buyers pay and sellers receive.
+
+```mermaid
+flowchart LR
+    A[Create token] --> B[Buy and sell on the curve]
+    B --> C[6.666 BNB equivalent net reserves]
+    C --> D[Token + reserve asset seed V2 liquidity]
+```
+
+Virtual reserves determine the curve price and cannot be withdrawn. Actual received assets fund sellbacks and graduation liquidity. For non-BNB launches, the target is converted to reserve-asset units and fixed when the token is created. After liquidity seeding, the DeFi template assigns the actual remaining tokens to mining rewards.
+
 ## DeFi mining
 
 | Pool | Share of actual reward budget | Principal lock |

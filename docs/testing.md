@@ -2,7 +2,7 @@
 
 Run `npm ci`, `npm run build`, `npm run typecheck`, `npm test`, `forge test` and `npm run check:manifest` from the public repository. Solidity is 0.8.28 with optimizer 200, via IR and Paris EVM.
 
-Selected regressions cover quote-only native and six-decimal payouts, rejection of token-asset claims, recipient failures and retry, optional LP/buyback failure isolation, third-party claims without payout redirection, staking eligibility, reward accounting and early-exit conservation. Shared test helpers and inherited tests remain where compilation requires them.
+Selected regressions cover quote-only native and six-decimal payouts, rejection of token-asset claims, recipient failures and retry, optional LP/buyback failure isolation, third-party claims without payout redirection, staking eligibility, reward accounting and early-exit conservation. The shared fixture deploys the current factory, template 12, fixed-allocation mining version 14, paired-asset revenue vault, and 6.666 BNB target. Superseded implementation tests are not part of this source snapshot.
 
 `FixedAllocationForkTest` uses actual BSC PancakeSwap V2 contracts for BNB launches with zero and nonzero project tax. It exercises graduation, external trading, paired-asset revenue, the three fixed-budget pools, early-exit deductions, and LP addition/removal. This shipped fork test does not claim coverage of every non-BNB quote route. Enable explicitly:
 

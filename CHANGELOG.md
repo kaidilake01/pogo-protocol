@@ -1,12 +1,13 @@
 # Current release
 
-## 2026-09-12
+## 2026-09-13 · BSC mainnet
 
-- Current launch templates: DeFi mining (11) and CZ transfer (10), with a 0.01 BNB-equivalent net graduation target for testing.
-- Fixed DeFi reward budgets: 6.25% flexible, 31.25% locked single token, 62.5% canonical V2 LP. Each pool releases over 90 occupied days and pauses when empty.
-- Single-token and LP locks last 24 hours per deposit. Early withdrawals send 10% of withdrawn principal to dEaD; LP receipts remain permanently locked with the underlying liquidity in its V2 pair.
-- Creator revenue and holder dividends settle in the paired asset. Mining rewards remain project tokens.
-- Production contract entrypoints are organized by function. Only required inherited dependencies remain under `contracts/internal/`.
-- Website and developer documentation share a dated rules snapshot. Removed superseded examples, stale deployment links and references to deleted tests.
+- Graduation target: **6.666 BNB equivalent net reserves**; opening virtual reserves are unchanged.
+- Current templates: **12** for DeFi mining and **10** for CZ transfer.
+- Mining budgets: **4% flexible / 16% locked single-token / 80% V2 LP**. Each pool releases over 90 occupied days and distributes by stake share.
+- Locks: 24 hours; early exits transfer 10% of withdrawn principal to the burn address. The platform does not receive the deduction.
+- Creator revenue and holder dividends use the paired asset; mining pays project tokens.
+- Source tree contains current production entrypoints and their required dependencies. Superseded standalone implementations and obsolete tests have been removed.
+- Current documentation explains token creation, reserve pricing and graduation with a concise flow diagram.
 
-Earlier releases remain available in [Git history](https://github.com/kaidilake01/pogo-protocol/commits/main/). Updating documentation does not modify existing deployed contracts.
+See [current rules](docs/current-rules.json) and [deployment record](docs/deployments/production-6666.json). Existing deployed projects retain their own fixed parameters.

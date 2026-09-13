@@ -19,7 +19,7 @@ function walk(dir){for(const e of fs.readdirSync(dir,{withFileTypes:true})){if([
 walk(root);
 for(const file of files){
  const text=fs.readFileSync(file,'utf8');
- assert(!/0\.01 BNB (?:test|equivalent)|6\.6666|QuoteRevenueForkTest|templates 9 and 10|Graduation seeding fee/.test(text),`Stale documentation: ${file}`);
+ assert(!/0\.01 BNB[- ](?:test|equivalent)|6\.6666|6\.25%|31\.25%|62\.5%|QuoteRevenueForkTest|templates 9 and 10|Graduation seeding fee/.test(text),`Stale documentation: ${file}`);
  for(const m of text.matchAll(/\]\(([^\s)]+)(?:\s+"[^"]*")?\)/g)){
   const url=m[1];if(/^(?:https?:|mailto:|#)/.test(url))continue;
   const target=decodeURIComponent(url.split('#')[0]);if(target)assert(fs.existsSync(path.resolve(path.dirname(file),target)),`Broken local link: ${file} -> ${url}`);

@@ -1,34 +1,32 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.28;
-import {LaunchTemplatesTest} from "./LaunchTemplates.t.sol";
+import {CurrentLaunchFixture} from "./CurrentLaunchFixture.sol";
 import {QuoteRevenueVault,QuoteVaultDeployer} from "../../contracts/src/RevenueVault.sol";
 import {LaunchFactoryV8} from "../../contracts/src/LaunchFactory.sol";
 import {LaunchFactoryV3} from "../../contracts/internal/LaunchFactoryV3.sol";
 import {StandardLaunchToken} from "../../contracts/src/LaunchToken.sol";
-import {MiningCurve} from "../../contracts/internal/MiningCurve.sol";
-import {LaunchMining} from "../../contracts/internal/LaunchMining.sol";
+import {ReflowCurve as MiningCurve} from "../../contracts/src/MiningCurve.sol";
+import {FixedAllocationMining as LaunchMining} from "../../contracts/src/Mining.sol";
 import {LaunchTypes} from "../../contracts/internal/LaunchTypes.sol";
-import {QuoteMock,PriceMock} from "./QuoteAssets.t.sol";
+import {QuoteMock,PriceMock} from "./QuoteMocks.sol";
 import {QuoteAssetRegistry} from "../../contracts/internal/QuoteAssetRegistry.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {MockPair} from "./Mocks.sol";
 interface VmQuoteRevenue {function mockCallRevert(address,bytes calldata,bytes calldata) external;function clearMockedCalls() external;function etch(address,bytes calldata) external;}
 contract RejectQuoteRecipient {receive() external payable {revert();}}
 
-contract QuoteRevenueTest is LaunchTemplatesTest {
+contract QuoteRevenueTest is CurrentLaunchFixture {
     function makeQuoteLaunch(bool stable) internal returns(StandardLaunchToken t,MiningCurve c,QuoteRevenueVault v,address asset){
         if(stable){
             QuoteMock q=new QuoteMock(6);PriceMock price=new PriceMock();price.set(1e8,block.timestamp);
             registry.configure(address(q),QuoteAssetRegistry.Asset(address(price),0,3600,6,8,0,true));asset=address(q);
         }
-        LaunchFactoryV8 next=templates();
-        QuoteVaultDeployer deployer=new QuoteVaultDeployer(address(next));
-        next.setStandaloneDeployers(address(next.standaloneTokenDeployer()),address(next.standaloneCurveDeployer()),address(deployer));
+        LaunchFactoryV8 next=f;
         LaunchFactoryV3.CreateParamsV3 memory p=params(asset,true);
         p.minTarget=QuoteAssetRegistry(address(next.quoteRegistry())).quoteLaunch(asset).target;p.maxTarget=p.minTarget;
-        p.expectedConfig=next.launchConfigHash(asset);
+        p.expectedConfig=next.templateConfigHash(asset,12);
         p.tax=LaunchTypes.Tax(300,300,3000,0,7000,0,address(0x777),0);
-        t=StandardLaunchToken(next.createTokenV3(p));(,address pool,address vault,)=next.projects(address(t));
+        t=StandardLaunchToken(next.createTokenWithTemplateV8(p,12));(,address pool,address vault,)=next.projects(address(t));
         c=MiningCurve(pool);v=QuoteRevenueVault(payable(vault));
         if(stable){QuoteMock(asset).mint(address(this),100_000e6);IERC20(asset).approve(pool,type(uint256).max);c.buy(100_000e6,1,block.timestamp,address(this));}
         else c.buy{value:10 ether}(10 ether,1,block.timestamp,address(this));

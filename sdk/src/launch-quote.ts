@@ -1,11 +1,12 @@
-import { initialVirtualTokens, SALE_SUPPLY } from "./curve-economics.js";
+import { bscDeployment } from "./deployments.js";
+import { initialVirtualTokens, curveAllocation, SALE_SUPPLY } from "./curve-economics.js";
 /** Integer arithmetic shared with the immutable curve selected by the launch quote. */
 export function previewInitialBuy(
   amount: bigint,
   target: bigint,
   virtualQuote: bigint,
   taxBps: number,
-  version = 3,
+  version: number = bscDeployment.curveVersion,
 ) {
   const denominator = 10000n - 100n - BigInt(taxBps);
   const max = (target * 10000n + denominator - 1n) / denominator;
@@ -22,12 +23,13 @@ export function previewInitialBuy(
       ? (initialVirtualTokens(target, virtualQuote, version) * net) /
         (virtualQuote + net)
       : 0n;
+  const sale = version >= 6 ? curveAllocation(target, virtualQuote, version).sold : SALE_SUPPLY;
   const tokens =
     version >= 5
       ? net === target
-        ? SALE_SUPPLY
-        : calculated > SALE_SUPPLY
-          ? SALE_SUPPLY
+        ? sale
+        : calculated > sale
+          ? sale
           : calculated
       : calculated;
   return { tokens, used, refund: amount - used, platform, tax };
