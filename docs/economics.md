@@ -18,7 +18,7 @@ CZ transfer is an ordinary transfer to `0x28816c4C4792467390C90e5B426F198570E293
 
 ## How the reserve asset supports a launch
 
-The factory creates a standalone token contract; the reserve asset does not mint the token. The initial billion tokens enter the launch curve. BNB, PEPE and other supported reserve assets determine what buyers pay and sellers receive.
+The factory creates a standalone token contract; the reserve asset does not mint the token. The initial billion tokens enter the launch curve. BNB and other enabled reserve assets determine what buyers pay and sellers receive.
 
 ```mermaid
 flowchart LR

@@ -23,7 +23,7 @@
 
 Smart contracts, a TypeScript SDK, and developer documentation for POGO on BNB Chain.
 
-POGO launches tokens against a supported quote asset, trades them on an internal bonding curve, and migrates completed markets to PancakeSwap V2. Traders can use BNB for supported non-BNB quote assets, including PEPE, through an on-chain conversion route.
+POGO launches tokens against a supported quote asset, trades them on an internal bonding curve, and migrates completed markets to PancakeSwap V2. Traders can use BNB for supported non-BNB quote assets, through an on-chain conversion route.
 
 This repository contains the protocol source snapshot and a source-distributed SDK. It does not include the hosted website, production credentials, databases, private deployment journals, or a claim of an independent security audit. The SDK is not published to npm by this release.
 
@@ -64,6 +64,8 @@ npm run example:read
 The examples accept `BSC_RPC_URL` for an optional RPC endpoint. They never load a private key or broadcast a transaction.
 
 ## Current launch model
+
+PEPE is currently unavailable for new website launches. Existing PEPE-paired markets retain their trading routes.
 
 | Parameter | Current templates |
 | --- | --- |
