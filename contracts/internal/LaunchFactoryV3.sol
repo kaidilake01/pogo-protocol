@@ -113,8 +113,8 @@ contract LaunchFactoryV3 is LaunchFactory {
     }
     function _createTokenV3(CreateParamsV3 calldata p) private returns(address token){
         if(creationPaused)revert CreationPaused();
-        if(bytes(p.name).length==0||bytes(p.name).length>64||bytes(p.symbol).length==0
-            ||bytes(p.symbol).length>12||bytes(p.metadataURI).length>256||!LaunchTypes.valid(p.tax)
+        if(bytes(p.name).length==0||bytes(p.symbol).length==0
+            ||bytes(p.metadataURI).length>256||!LaunchTypes.valid(p.tax)
             ||p.expectedConfig!=launchConfigHash(p.quoteAsset)||p.minTarget==0||p.maxTarget<p.minTarget)revert InvalidConfig();
         QuoteAssetRegistry.LaunchQuote memory q=quoteRegistry.quoteLaunch(p.quoteAsset);
         if(q.target<p.minTarget||q.target>p.maxTarget)revert InvalidConfig();

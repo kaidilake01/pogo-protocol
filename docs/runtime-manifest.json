@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "algorithm": "sha256",
   "release": "docs/deployments/deferred-mining.json",
-  "provenance": "Compiler output used for the mainnet v15 deployment verification bundles. Source paths are reorganized in this repository; executable bytes must match after masking compiler-declared immutables and only the metadata IPFS digest of embedded child contracts. The outer Solidity metadata footer is excluded.",
+  "provenance": "Compiler output used for the mainnet v15 deployment verification bundles. Source paths are reorganized in this repository; executable bytes must match after masking compiler-declared immutables and only the metadata IPFS digest of embedded child contracts. The outer Solidity metadata footer is excluded. The factory fingerprint uses the compiler artifact deployed in docs/deployments/token-text.json.",
   "compiler": "0.8.28+commit.7893614a",
   "settings": {
     "optimizer": {
@@ -113,6 +113,26 @@
         }
       ],
       "normalizedExecutableSha256": "d688da7fb02cea38d5e6040593f6b001dda102cddf7f1e914a812613d62abc21"
+    },
+    {
+      "name": "LaunchFactoryV8",
+      "artifact": "out/LaunchFactory.sol/LaunchFactoryV8.json",
+      "source": {
+        "contracts/src/LaunchFactory.sol": "LaunchFactoryV8"
+      },
+      "runtimeBytes": 23132,
+      "immutableRanges": [
+        {
+          "start": 14547,
+          "length": 32
+        },
+        {
+          "start": 14841,
+          "length": 32
+        }
+      ],
+      "embeddedMetadata": [],
+      "normalizedExecutableSha256": "c0a22a19cc936b6c9568ceb0978c630a0c9129994b78dd0a37df115937e162d4"
     }
   ]
 }

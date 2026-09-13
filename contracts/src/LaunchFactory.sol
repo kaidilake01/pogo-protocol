@@ -12,6 +12,8 @@ contract LaunchFactoryV8 is LaunchFactoryV7 {
     uint256 private activeTemplate;
     uint256[] public launchTemplateIds;
     uint256 public constant LAUNCH_TEMPLATES_VERSION=1;
+    /// @notice Nonempty names and symbols have no application-level byte ceiling.
+    uint256 public constant TOKEN_TEXT_VERSION=2;
     event LaunchTemplateRegistered(uint256 indexed id,address curveDeployer,address vaultDeployer,uint8 kind);
     event LaunchTemplateEnabled(uint256 indexed id,bool enabled);
     event ProjectTemplateSelected(address indexed token,uint256 indexed templateId);

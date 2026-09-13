@@ -1,0 +1,32 @@
+{
+  "factory": "0x0abc6174ee9f9600243D14F83E215993b8BbABEb",
+  "implementation": "0x576c73bFb8Fede5eFf8814F50a00f7cb5D5bc77A",
+  "previousImplementation": "0xc8C820a3DEc5666E9a4B02275E293a6f15f4b813",
+  "tokenTextVersion": 2,
+  "chainId": 56,
+  "legacyStatePreserved": true,
+  "templatesPreserved": true,
+  "storageLayoutUnchanged": true,
+  "verificationEntries": [
+    {
+      "address": "0x576c73bFb8Fede5eFf8814F50a00f7cb5D5bc77A",
+      "constructorArguments": "0x"
+    }
+  ],
+  "transactions": [
+    {
+      "name": "LaunchFactoryV8",
+      "hash": "0x1efc1f572bd1a0ff573ad222ce24be3e6a67aa2e34a06028f4fba7eb159a2428",
+      "address": "0x576c73bFb8Fede5eFf8814F50a00f7cb5D5bc77A",
+      "cost": "255171700000000",
+      "block": 121626569
+    },
+    {
+      "name": "upgrade-token-text-v2",
+      "hash": "0xb21731761cd37a5179f5b0c3203c80cee83fc5ac01d00dacfb4b56ad879b2863",
+      "cost": "1882650000000",
+      "block": 121626578
+    }
+  ],
+  "totalGasBNB": "0.00025705435"
+}
